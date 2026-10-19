@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>블루보틀 드리퍼 (30g) 다이얼링 시뮬레이터</title>
+  <title>브루잉 드리퍼 다이얼링 시뮬레이터 (블루보틀 · 하리오 · 칼리타)</title>
   <style>
     :root {
-      --bb-blue: #00a1e4;
-      --bb-blue-dark: #0077ac;
-      --bb-bg: #f8f9fa;
+      --theme-color: #00a1e4;
+      --theme-dark: #0077ac;
+      --theme-soft: #e7f5ff;
+      --bg-color: #f8f9fa;
       --card-bg: #ffffff;
       --text-main: #212529;
       --text-sub: #6c757d;
       --sour-color: #f59f00;
       --sweet-color: #37b24d;
       --bitter-color: #7950f2;
-      --danger-color: #e03131;
       --border-color: #e9ecef;
     }
 
@@ -27,14 +27,14 @@
     }
 
     body {
-      background-color: var(--bb-bg);
+      background-color: var(--bg-color);
       color: var(--text-main);
-      padding: 24px;
+      padding: 20px;
       line-height: 1.5;
     }
 
     .container {
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
@@ -43,8 +43,8 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 18px;
       padding-bottom: 16px;
       border-bottom: 2px solid var(--border-color);
     }
@@ -55,22 +55,23 @@
       gap: 12px;
     }
 
-    .bb-logo {
-      width: 38px;
-      height: 38px;
-      background-color: var(--bb-blue);
-      border-radius: 10px;
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      background-color: var(--theme-color);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 20px;
+      transition: background-color 0.25s;
     }
 
     h1 {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 21px;
+      font-weight: 800;
     }
 
     .subtitle {
@@ -78,15 +79,68 @@
       color: var(--text-sub);
     }
 
+    /* Dripper Selector Cards */
+    .dripper-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .dripper-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dripper-card:hover {
+      border-color: var(--theme-color);
+    }
+
+    .dripper-card.active {
+      border-color: var(--theme-color);
+      background: var(--theme-soft);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .dripper-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .dripper-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.06);
+      font-weight: 700;
+    }
+
+    .dripper-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    /* Presets */
     .preset-group {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      margin-bottom: 18px;
     }
 
     .preset-btn {
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 7px 13px;
+      font-size: 12.5px;
       font-weight: 600;
       border: 1px solid var(--border-color);
       background: var(--card-bg);
@@ -97,14 +151,14 @@
     }
 
     .preset-btn:hover {
-      border-color: var(--bb-blue);
-      color: var(--bb-blue);
+      border-color: var(--theme-color);
+      color: var(--theme-dark);
     }
 
     .preset-btn.active {
-      background: var(--bb-blue);
+      background: var(--theme-color);
       color: #fff;
-      border-color: var(--bb-blue);
+      border-color: var(--theme-color);
     }
 
     /* KPI Cards */
@@ -117,7 +171,7 @@
 
     .kpi-card {
       background: var(--card-bg);
-      padding: 16px 18px;
+      padding: 15px 18px;
       border-radius: 14px;
       border: 1px solid var(--border-color);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
@@ -134,7 +188,7 @@
     }
 
     .kpi-value {
-      font-size: 26px;
+      font-size: 25px;
       font-weight: 800;
       color: var(--text-main);
     }
@@ -159,7 +213,7 @@
     /* Main Grid */
     .main-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 380px 1fr;
       gap: 20px;
     }
 
@@ -182,11 +236,15 @@
 
     /* Sliders */
     .control-item {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--border-color);
     }
 
     .control-item:last-child {
       margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
 
     .control-header {
@@ -197,19 +255,19 @@
     }
 
     .control-name {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
     }
 
     .control-val {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
-      color: var(--bb-blue-dark);
+      color: var(--theme-dark);
     }
 
     input[type="range"] {
       width: 100%;
-      accent-color: var(--bb-blue);
+      accent-color: var(--theme-color);
       height: 6px;
       cursor: pointer;
     }
@@ -222,9 +280,33 @@
       margin-top: 4px;
     }
 
+    .ratio-sync-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: #f1f3f5;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .mini-btn:hover {
+      background: var(--theme-soft);
+      border-color: var(--theme-color);
+    }
+
     /* Balance Gauge & Bars */
     .balance-meter-wrap {
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       padding: 14px;
       background: #f8f9fa;
       border-radius: 10px;
@@ -305,7 +387,7 @@
 
     canvas {
       width: 100%;
-      height: 270px;
+      height: 265px;
       background: #ffffff;
       border-radius: 8px;
     }
@@ -314,18 +396,20 @@
       margin-top: 16px;
       padding: 14px 16px;
       border-radius: 10px;
-      background: #e7f5ff;
-      border-left: 4px solid var(--bb-blue);
+      background: var(--theme-soft);
+      border-left: 4px solid var(--theme-color);
       font-size: 13.5px;
+      transition: all 0.25s;
     }
 
     .diagnosis-title {
       font-weight: 700;
-      color: var(--bb-blue-dark);
+      color: var(--theme-dark);
       margin-bottom: 4px;
     }
 
     @media (max-width: 960px) {
+      .dripper-selector { grid-template-columns: 1fr; }
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
       .main-grid { grid-template-columns: 1fr; }
       .charts-grid { grid-template-columns: 1fr; }
@@ -336,20 +420,51 @@
   <div class="container">
     <header>
       <div class="title-group">
-        <div class="bb-logo">B</div>
+        <div class="logo-badge" id="logo-badge">B</div>
         <div>
-          <h1>블루보틀 드리퍼 (원두 30g) 다이얼링 실습 도구</h1>
-          <div class="subtitle">원두 30g 고정 · 플랫 베드 40-리브 드리퍼 수율(EY) · 농도(TDS) · 신맛/쓴맛 밸런스 시뮬레이터</div>
+          <h1 id="main-title">브루잉 드리퍼 다이얼링 실습 도구</h1>
+          <div class="subtitle" id="main-subtitle">원두 10g~50g · 블루보틀 / 하리오 V60 / 칼리타 웨이브 실시간 수율(EY) · 농도(TDS) · 향미 시뮬레이터</div>
         </div>
       </div>
-      <div class="preset-group">
-        <button class="preset-btn active" onclick="applyPreset('standard', this)">블루보틀 30g 표준 (스윗 스팟)</button>
-        <button class="preset-btn" onclick="applyPreset('light', this)">약배전 싱글오리진 (화사한 산미)</button>
-        <button class="preset-btn" onclick="applyPreset('bold', this)">벨라 도노반 블렌드 (묵직한 바디)</button>
-        <button class="preset-btn" onclick="applyPreset('under', this)">과소 추출 예시</button>
-        <button class="preset-btn" onclick="applyPreset('over', this)">과다 추출 예시</button>
-      </div>
     </header>
+
+    <!-- 1. 드리퍼 용기 선택 -->
+    <div class="dripper-selector">
+      <div class="dripper-card active" id="card-bluebottle" onclick="selectDripper('bluebottle')">
+        <div class="dripper-card-head">
+          <span>🔵 블루보틀 드리퍼 (Blue Bottle)</span>
+          <span class="dripper-tag">플랫베드 · 단일 추출구</span>
+        </div>
+        <div class="dripper-desc">40개 수직 모세관 리브와 1개의 추출구. 균일한 수율과 풍부한 단맛·바디감을 내며 가는 분쇄도에서는 병목에 유의해야 합니다.</div>
+      </div>
+
+      <div class="dripper-card" id="card-hario" onclick="selectDripper('hario')">
+        <div class="dripper-card-head">
+          <span>🔺 하리오 V60 (Hario V60)</span>
+          <span class="dripper-tag">원추형 · 대구경 추출구</span>
+        </div>
+        <div class="dripper-desc">60도 각도의 나선형 리브와 큰 구멍으로 유속이 빠릅니다. 화사한 산미와 깔끔한 클린컵 표현에 유리합니다.</div>
+      </div>
+
+      <div class="dripper-card" id="card-kalita" onclick="selectDripper('kalita')">
+        <div class="dripper-card-head">
+          <span>🌊 칼리타 웨이브 (Kalita Wave)</span>
+          <span class="dripper-tag">플랫베드 · 3공 추출구</span>
+        </div>
+        <div class="dripper-desc">웨이브 필터와 3개의 작은 구멍이 유속을 일정하게 제어합니다. 반침출 효과로 단맛과 밸런스 재현성이 뛰어납니다.</div>
+      </div>
+    </div>
+
+    <!-- 빠른 프리셋 버튼 -->
+    <div class="preset-group">
+      <button class="preset-btn active" onclick="applyPreset('standard', this)">현재 드리퍼 표준 스윗 스팟 (30g)</button>
+      <button class="preset-btn" onclick="applyPreset('single15', this)">1인분 표준 추출 (15g / 240g)</button>
+      <button class="preset-btn" onclick="applyPreset('batch45', this)">대용량 배치 추출 (45g / 720g)</button>
+      <button class="preset-btn" onclick="applyPreset('light', this)">약배전 싱글오리진 (화사한 산미)</button>
+      <button class="preset-btn" onclick="applyPreset('bold', this)">강배전·블렌드 (묵직한 단맛)</button>
+      <button class="preset-btn" onclick="applyPreset('under', this)">과소 추출 예시</button>
+      <button class="preset-btn" onclick="applyPreset('over', this)">과다 추출 예시</button>
+    </div>
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
@@ -368,7 +483,7 @@
           <span id="tds-badge" class="badge badge-good">골든컵 농도</span>
         </div>
         <div class="kpi-value" id="tds-val">1.43%</div>
-        <div class="kpi-sub" id="ratio-sub">비율 1:16.0 · 최종 추출액 420g</div>
+        <div class="kpi-sub" id="ratio-sub">원두 30g · 비율 1:16.0 · 추출액 420g</div>
       </div>
 
       <div class="kpi-card">
@@ -377,7 +492,7 @@
           <span id="flow-badge" class="badge badge-good">유속 안정</span>
         </div>
         <div class="kpi-value" id="flow-val">적정 저항</div>
-        <div class="kpi-sub" id="flow-sub">평균 유속 2.00 g/s · 목표 시간 일치</div>
+        <div class="kpi-sub" id="flow-sub">평균 유속 2.29 g/s · 자연 배수 210초</div>
       </div>
 
       <div class="kpi-card">
@@ -385,67 +500,100 @@
           <span>신맛 · 단맛 · 쓴맛 향미 판정</span>
           <span id="flavor-badge" class="badge badge-good">밸런스</span>
         </div>
-        <div class="kpi-value" id="flavor-val" style="font-size: 21px;">이상적인 스윗 스팟</div>
+        <div class="kpi-value" id="flavor-val" style="font-size: 20px;">이상적인 스윗 스팟</div>
         <div class="kpi-sub" id="flavor-sub">단맛이 산미와 쓴맛을 입체적으로 연결</div>
       </div>
     </div>
 
     <div class="main-grid">
-      <!-- Left: Controls -->
+      <!-- Left: 5 Sliders -->
       <div class="panel">
         <div class="panel-title">
-          <span>다이얼링 변수 조작 (원두 30g 기준)</span>
+          <span>다이얼링 변수 조작</span>
+          <span style="font-size:12px; color:var(--theme-dark);" id="dripper-indicator">블루보틀 드리퍼 선택됨</span>
         </div>
 
+        <!-- 1. 원두 양 (10~50g) -->
         <div class="control-item">
           <div class="control-header">
-            <span class="control-name">1. 원두 분쇄도 (Grind Size)</span>
+            <span class="control-name">1. 원두 도징량 (Coffee Dose)</span>
+            <span class="control-val" id="dose-label">30 g (2~3인분)</span>
+          </div>
+          <input type="range" id="dose" min="10" max="50" step="1" value="30" oninput="onDoseChange()" />
+          <div class="control-labels">
+            <span>10g (소량 1인분)</span>
+            <span>30g (중량)</span>
+            <span>50g (대용량 배치)</span>
+          </div>
+          <div class="ratio-sync-row">
+            <label style="font-size:11.5px; color:#495057; display:flex; align-items:center; gap:5px; cursor:pointer;">
+              <input type="checkbox" id="lock-ratio" checked /> 원두 양 변경 시 물의 양(비율) 자동 연동
+            </label>
+            <button class="mini-btn" onclick="setRatio(16)">1:16 맞춤</button>
+          </div>
+        </div>
+
+        <!-- 2. 원두 분쇄도 -->
+        <div class="control-item">
+          <div class="control-header">
+            <span class="control-name">2. 원두 분쇄도 (Grind Size)</span>
             <span class="control-val" id="grind-label">800 μm (중굵기)</span>
           </div>
-          <input type="range" id="grind" min="500" max="1100" step="20" value="800" oninput="updateDial()" />
+          <input type="range" id="grind" min="450" max="1150" step="20" value="800" oninput="updateDial()" />
           <div class="control-labels">
-            <span>500μm (고운 소금/가늘게)</span>
-            <span>800μm (권장)</span>
-            <span>1100μm (굵은 설탕/굵게)</span>
+            <span>450μm (가늘게)</span>
+            <span id="grind-rec-label">권장: 800μm</span>
+            <span>1150μm (굵게)</span>
           </div>
         </div>
 
+        <!-- 3. 물 온도 -->
         <div class="control-item">
           <div class="control-header">
-            <span class="control-name">2. 추출수 온도 (Water Temp)</span>
+            <span class="control-name">3. 추출수 온도 (Water Temp)</span>
             <span class="control-val" id="temp-label">92.5 °C</span>
           </div>
           <input type="range" id="temp" min="85" max="98" step="0.5" value="92.5" oninput="updateDial()" />
           <div class="control-labels">
-            <span>85°C (강배전/쓴맛 억제)</span>
-            <span>92.5°C (권장)</span>
-            <span>98°C (약배전/추출 극대화)</span>
+            <span>85°C (강배전)</span>
+            <span>92.5°C (표준)</span>
+            <span>98°C (약배전)</span>
           </div>
         </div>
 
+        <!-- 4. 추출 시간 -->
         <div class="control-item">
           <div class="control-header">
-            <span class="control-name">3. 총 추출 시간 (Brew Time)</span>
+            <span class="control-name">4. 총 추출 시간 (Brew Time)</span>
             <span class="control-val" id="time-label">3분 30초 (210초)</span>
           </div>
-          <input type="range" id="time" min="120" max="300" step="5" value="210" oninput="updateDial()" />
+          <input type="range" id="time" min="90" max="330" step="5" value="210" oninput="updateDial()" />
           <div class="control-labels">
-            <span>2분 00초 (빠른 추출)</span>
-            <span>3분 30초 (권장)</span>
-            <span>5분 00초 (긴 추출)</span>
+            <span>1분 30초 (빠름)</span>
+            <span id="time-rec-label">권장: 3분 30초</span>
+            <span>5분 30초 (김)</span>
           </div>
         </div>
 
+        <!-- 5. 물의 양 -->
         <div class="control-item">
           <div class="control-header">
-            <span class="control-name">4. 총 물의 양 (Water Weight)</span>
+            <span class="control-name">5. 총 물의 양 (Water Weight)</span>
             <span class="control-val" id="water-label">480 g (1:16.0)</span>
           </div>
-          <input type="range" id="water" min="330" max="600" step="10" value="480" oninput="updateDial()" />
+          <input type="range" id="water" min="120" max="950" step="10" value="480" oninput="onWaterChange()" />
           <div class="control-labels">
-            <span>330g (1:11 진하게)</span>
-            <span>480g (1:16 표준)</span>
-            <span>600g (1:20 연하게)</span>
+            <span>120g (소량/고농도)</span>
+            <span>480g (표준)</span>
+            <span>950g (대용량)</span>
+          </div>
+          <div class="ratio-sync-row">
+            <span style="font-size:11px; color:var(--text-sub);">빠른 비율 설정:</span>
+            <div>
+              <button class="mini-btn" onclick="setRatio(14)">1:14 (진하게)</button>
+              <button class="mini-btn" onclick="setRatio(16)">1:16 (표준)</button>
+              <button class="mini-btn" onclick="setRatio(17.5)">1:17.5 (연하게)</button>
+            </div>
           </div>
         </div>
       </div>
@@ -512,91 +660,242 @@
         <!-- Dynamic Barista Advice -->
         <div class="diagnosis-box">
           <div class="diagnosis-title" id="diag-title">바리스타 다이얼링 진단</div>
-          <div id="diag-desc">원두 30g에 물 480g(1:16), 800μm 분쇄도, 92.5°C, 3분 30초 추출은 블루보틀 플랫 베드 드리퍼의 모세관 리브와 단일 추출구 유속에 가장 이상적으로 부합합니다.</div>
+          <div id="diag-desc">드리퍼와 원두 양에 맞는 최적의 추출 상태입니다.</div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const DOSE = 30.0; // 원두 30g 고정
+    // 드리퍼 3종 물리·향미 특성 프로필
+    const DRIPPERS = {
+      bluebottle: {
+        name: '블루보틀 드리퍼',
+        badge: 'B',
+        themeColor: '#00a1e4',
+        themeDark: '#0077ac',
+        themeSoft: '#e7f5ff',
+        baseGrind30: 800,     // 30g 기준 권장 분쇄도 (μm)
+        baseTime30: 210,      // 30g 기준 권장 추출 시간 (초)
+        flowSpeedFactor: 1.0, // 기준 유속 계수
+        retentionRatio: 2.0,  // 원두 1g당 머금는 물 (g)
+        acidityBias: 1.0,     // 산미 가중치
+        sweetnessBias: 1.12,  // 플랫베드 균일 추출로 단맛 유리
+        bodyBias: 1.05,
+        chokeThreshold: 640   // 단일 추출구 병목 발생 분쇄도 기준
+      },
+      hario: {
+        name: '하리오 V60',
+        badge: 'V',
+        themeColor: '#e03131',
+        themeDark: '#c92a2a',
+        themeSoft: '#fff5f5',
+        baseGrind30: 720,     // 원추형 대구경이라 조금 더 가늘게 분쇄
+        baseTime30: 185,      // 유속이 빨라 추출 시간이 더 짧음
+        flowSpeedFactor: 1.16,
+        retentionRatio: 1.9,
+        acidityBias: 1.15,    // 밝고 화사한 산미 강조
+        sweetnessBias: 1.0,
+        bodyBias: 0.92,       // 깔끔한 티 라이크(Tea-like) 바디
+        chokeThreshold: 540
+      },
+      kalita: {
+        name: '칼리타 웨이브',
+        badge: 'K',
+        themeColor: '#d9480f',
+        themeDark: '#b43c0c',
+        themeSoft: '#fff4e6',
+        baseGrind30: 840,     // 바닥 3개 소형 구멍으로 배수 저항이 커 굵게 분쇄
+        baseTime30: 220,      // 반침출 효과로 접촉 시간이 김
+        flowSpeedFactor: 0.92,
+        retentionRatio: 2.1,
+        acidityBias: 0.92,
+        sweetnessBias: 1.15,  // 묵직한 단맛과 밸런스 재현성
+        bodyBias: 1.12,
+        chokeThreshold: 690
+      }
+    };
+
+    let currentDripper = 'bluebottle';
+    let savedRatio = 16.0;
 
     function formatTime(sec) {
       const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      return `${m}분 ${s < 10 ? '0' + s : s}초 (${sec}초)`;
+      const s = Math.round(sec % 60);
+      return `${m}분 ${s < 10 ? '0' + s : s}초 (${Math.round(sec)}초)`;
+    }
+
+    // 원두 도징량(dose)에 따른 드리퍼별 권장 분쇄도 및 권장 추출시간 계산
+    function getRecommendedParams(dripperKey, dose) {
+      const d = DRIPPERS[dripperKey];
+      // 원두 양이 많아질수록 커피 베드가 두꺼워지므로 분쇄도를 굵게 풀어주어야 유속이 유지됨
+      const recGrind = Math.round((d.baseGrind30 + (dose - 30) * 4.5) / 20) * 20;
+      // 원두 양이 많아질수록 부어야 할 물의 양이 늘어나 총 추출 시간도 길어짐
+      const recTime = Math.round((d.baseTime30 * Math.pow(dose / 30, 0.28)) / 5) * 5;
+      return { recGrind, recTime };
+    }
+
+    function selectDripper(dripperKey) {
+      currentDripper = dripperKey;
+      const d = DRIPPERS[dripperKey];
+
+      // 테마 색상 변경
+      document.documentElement.style.setProperty('--theme-color', d.themeColor);
+      document.documentElement.style.setProperty('--theme-dark', d.themeDark);
+      document.documentElement.style.setProperty('--theme-soft', d.themeSoft);
+
+      document.getElementById('logo-badge').textContent = d.badge;
+      document.getElementById('dripper-indicator').textContent = `${d.name} 선택됨`;
+
+      // 카드 활성화 표시
+      ['bluebottle', 'hario', 'kalita'].forEach(k => {
+        document.getElementById('card-' + k).classList.toggle('active', k === dripperKey);
+      });
+
+      // 현재 원두 양에 맞춰 해당 드리퍼의 권장 분쇄도·시간으로 부드럽게 맞춤
+      const dose = parseFloat(document.getElementById('dose').value);
+      const { recGrind, recTime } = getRecommendedParams(dripperKey, dose);
+      document.getElementById('grind').value = recGrind;
+      document.getElementById('time').value = recTime;
+
+      updateDial();
+    }
+
+    function onDoseChange() {
+      const dose = parseFloat(document.getElementById('dose').value);
+      const lockRatio = document.getElementById('lock-ratio').checked;
+      if (lockRatio) {
+        const newWater = Math.round((dose * savedRatio) / 10) * 10;
+        const waterEl = document.getElementById('water');
+        waterEl.value = Math.max(120, Math.min(950, newWater));
+      }
+      updateDial();
+    }
+
+    function onWaterChange() {
+      const dose = parseFloat(document.getElementById('dose').value);
+      const water = parseFloat(document.getElementById('water').value);
+      savedRatio = water / dose;
+      updateDial();
+    }
+
+    function setRatio(targetRatio) {
+      savedRatio = targetRatio;
+      const dose = parseFloat(document.getElementById('dose').value);
+      const newWater = Math.round((dose * targetRatio) / 10) * 10;
+      document.getElementById('water').value = Math.max(120, Math.min(950, newWater));
+      updateDial();
     }
 
     function applyPreset(type, btnEl) {
       document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
       if (btnEl) btnEl.classList.add('active');
 
-      const grind = document.getElementById('grind');
-      const temp = document.getElementById('temp');
-      const time = document.getElementById('time');
-      const water = document.getElementById('water');
+      const doseEl = document.getElementById('dose');
+      const grindEl = document.getElementById('grind');
+      const tempEl = document.getElementById('temp');
+      const timeEl = document.getElementById('time');
+      const waterEl = document.getElementById('water');
 
       if (type === 'standard') {
-        grind.value = 800; temp.value = 92.5; time.value = 210; water.value = 480;
+        doseEl.value = 30;
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, 30);
+        grindEl.value = recGrind; tempEl.value = 92.5; timeEl.value = recTime; waterEl.value = 480;
+        savedRatio = 16.0;
+      } else if (type === 'single15') {
+        doseEl.value = 15;
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, 15);
+        grindEl.value = recGrind; tempEl.value = 93.0; timeEl.value = recTime; waterEl.value = 240;
+        savedRatio = 16.0;
+      } else if (type === 'batch45') {
+        doseEl.value = 45;
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, 45);
+        grindEl.value = recGrind; tempEl.value = 92.0; timeEl.value = recTime; waterEl.value = 720;
+        savedRatio = 16.0;
       } else if (type === 'light') {
-        grind.value = 760; temp.value = 95.0; time.value = 220; water.value = 510;
+        const dose = parseFloat(doseEl.value);
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
+        grindEl.value = recGrind - 40; tempEl.value = 95.0; timeEl.value = recTime + 10;
+        waterEl.value = Math.round((dose * 17) / 10) * 10;
+        savedRatio = 17.0;
       } else if (type === 'bold') {
-        grind.value = 820; temp.value = 90.0; time.value = 200; water.value = 390;
+        const dose = parseFloat(doseEl.value);
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
+        grindEl.value = recGrind + 20; tempEl.value = 89.5; timeEl.value = recTime - 10;
+        waterEl.value = Math.round((dose * 13.5) / 10) * 10;
+        savedRatio = 13.5;
       } else if (type === 'under') {
-        grind.value = 980; temp.value = 88.0; time.value = 150; water.value = 420;
+        const dose = parseFloat(doseEl.value);
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
+        grindEl.value = recGrind + 180; tempEl.value = 87.5; timeEl.value = Math.max(95, recTime - 55);
+        waterEl.value = Math.round((dose * 14) / 10) * 10;
+        savedRatio = 14.0;
       } else if (type === 'over') {
-        grind.value = 600; temp.value = 96.0; time.value = 265; water.value = 540;
+        const dose = parseFloat(doseEl.value);
+        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
+        grindEl.value = recGrind - 180; tempEl.value = 96.5; timeEl.value = recTime + 60;
+        waterEl.value = Math.round((dose * 18) / 10) * 10;
+        savedRatio = 18.0;
       }
       updateDial();
     }
 
     function updateDial() {
+      const d = DRIPPERS[currentDripper];
+      const dose = parseFloat(document.getElementById('dose').value);
       const grind = parseFloat(document.getElementById('grind').value);
       const temp = parseFloat(document.getElementById('temp').value);
       const time = parseFloat(document.getElementById('time').value);
       const water = parseFloat(document.getElementById('water').value);
 
-      // 1. 라벨 업데이트
-      let grindDesc = grind < 680 ? '가늘게' : (grind <= 880 ? '중굵기·권장' : '굵게');
+      const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
+      document.getElementById('grind-rec-label').textContent = `${d.name} ${dose}g 권장: ${recGrind}μm`;
+      document.getElementById('time-rec-label').textContent = `권장: ${formatTime(recTime).split(' (')[0]}`;
+
+      // 1. 컨트롤 라벨 업데이트
+      let cupCount = dose <= 18 ? '1인분' : (dose <= 32 ? '2~3인분' : '3~5인분 대용량');
+      document.getElementById('dose-label').textContent = `${dose} g (${cupCount})`;
+
+      let grindDesc = grind < recGrind - 80 ? '가늘게' : (grind <= recGrind + 80 ? '권장 범위' : '굵게');
       document.getElementById('grind-label').textContent = `${grind} μm (${grindDesc})`;
       document.getElementById('temp-label').textContent = `${temp.toFixed(1)} °C`;
       document.getElementById('time-label').textContent = formatTime(time);
-      const ratio = water / DOSE;
+
+      const ratio = water / dose;
       document.getElementById('water-label').textContent = `${water} g (1:${ratio.toFixed(1)})`;
 
-      // 2. 물리·화학적 추출 수율(EY) 모델링 (30g 기준)
-      // 분쇄도가 가늘수록 표면적 증가, 물 온도가 높을수록 용해도 증가, 시간이 길수록 접촉 증가, 물의 양이 많을수록 용매 구배 증가
-      const grindFactor = Math.pow(800 / grind, 0.72);
+      // 2. 추출 수율(EY) 계산 모델 (원두량, 드리퍼 특성, 분쇄도, 온도, 시간, 물 비율 반영)
+      const grindFactor = Math.pow(recGrind / grind, 0.72);
       const tempFactor = 1 + 0.018 * (temp - 92.5);
-      const timeFactor = 1 - Math.exp(-time / 108); // baseline at 210s is ~0.857
-      const timeNorm = timeFactor / (1 - Math.exp(-210 / 108));
-      const waterFactor = Math.pow(water / 480, 0.36);
+      const timeTau = recTime * 0.52;
+      const timeFactor = (1 - Math.exp(-time / timeTau)) / (1 - Math.exp(-recTime / timeTau));
+      const ratioFactor = Math.pow(ratio / 16.0, 0.36);
 
-      // 너무 가는 분쇄도(<650)와 긴 시간이 겹치면 블루보틀 단일 구멍에서 채널링/미분 막힘(Stalling)으로 국소 과다추출 발생
-      let ey = 20.0 * grindFactor * tempFactor * timeNorm * waterFactor;
-      ey = Math.max(12.0, Math.min(26.5, ey));
+      let ey = 20.0 * grindFactor * tempFactor * timeFactor * ratioFactor;
+      ey = Math.max(11.5, Math.min(26.8, ey));
 
-      // 3. 농도(TDS) 계산 (원두 30g이 머금는 물 약 60g 제외)
-      const retention = DOSE * 2.0; // 60g
-      const beverageWeight = Math.max(200, water - retention);
-      const extractedSolubles = DOSE * (ey / 100.0);
+      // 3. 농도(TDS) 계산 (드리퍼별 원두 함수율 제외)
+      const retention = dose * d.retentionRatio;
+      const beverageWeight = Math.max(50, water - retention);
+      const extractedSolubles = dose * (ey / 100.0);
       const tds = (extractedSolubles / beverageWeight) * 100.0;
 
-      // 4. 드리퍼 자연 배수 시간(자연 유속) 대비 현재 설정된 추출 시간의 물리적 정합성 계산
-      // 분쇄도가 가늘수록, 물의 양이 많을수록 자연 배수 시간은 길어짐
-      const naturalDrainTime = 210 * Math.pow(800 / grind, 1.15) * Math.pow(water / 480, 0.55);
+      // 4. 드리퍼 및 도징량에 따른 자연 배수 시간 계산
+      const naturalDrainTime = recTime * Math.pow(recGrind / grind, 1.15) * Math.pow(ratio / 16.0, 0.5);
       const timeDiff = time - naturalDrainTime;
 
-      // 5. 신맛 / 단맛 / 쓴맛 밸런스 계산
-      // 수율과 온도, 그리고 침출 정체(Stalling) 여부에 따라 결정
-      const stallPenalty = (grind < 680 && time > 230) ? 1.8 : 0;
+      // 5. 신맛 / 단맛 / 쓴맛 밸런스 계산 (드리퍼 고유 향미 성향 반영)
+      const chokeLimit = d.chokeThreshold + (dose - 30) * 3.5;
+      const isChoking = grind < chokeLimit;
+      const stallPenalty = (isChoking && time > recTime + 20) ? 1.8 : 0;
+
       const balanceIndex = Math.max(-100, Math.min(100,
-        (ey - 20.0) * 16.5 + (temp - 92.5) * 2.8 + (time - 210) * 0.12 + stallPenalty * 8
+        (ey - 20.0) * 16.5 + (temp - 92.5) * 2.8 + (time - recTime) * 0.12 + stallPenalty * 8
       ));
 
-      const sourRaw = Math.max(8, 52 - (ey - 16.5) * 7.2 - (temp - 92.5) * 1.1);
-      const sweetRaw = Math.max(10, 62 - Math.pow(ey - 20.0, 2) * 4.5 - Math.pow((temp - 92.5) * 0.4, 2));
-      const bitterRaw = Math.max(8, 16 + (ey - 17.5) * 7.8 + (temp - 91.0) * 2.2 + (time > 230 ? (time - 230) * 0.25 : 0));
+      const sourRaw = Math.max(6, (50 - (ey - 16.5) * 7.2 - (temp - 92.5) * 1.1) * d.acidityBias);
+      const sweetRaw = Math.max(8, (60 - Math.pow(ey - 20.0, 2) * 4.5 - Math.pow((temp - 92.5) * 0.4, 2)) * d.sweetnessBias);
+      const bitterRaw = Math.max(6, (16 + (ey - 17.5) * 7.8 + (temp - 91.0) * 2.2 + (time > recTime + 25 ? (time - recTime - 25) * 0.25 : 0)) * d.bodyBias);
 
       const totalFlavor = sourRaw + sweetRaw + bitterRaw;
       const sourPct = Math.round((sourRaw / totalFlavor) * 100);
@@ -615,7 +914,7 @@
       }
 
       document.getElementById('tds-val').textContent = `${tds.toFixed(2)}%`;
-      document.getElementById('ratio-sub').textContent = `비율 1:${ratio.toFixed(1)} · 최종 추출액 ${Math.round(beverageWeight)}g`;
+      document.getElementById('ratio-sub').textContent = `원두 ${dose}g · 비율 1:${ratio.toFixed(1)} · 추출액 ${Math.round(beverageWeight)}g`;
       const tdsBadge = document.getElementById('tds-badge');
       if (tds < 1.15) {
         tdsBadge.textContent = '연한 농도 (Weak)'; tdsBadge.className = 'badge badge-warn';
@@ -630,19 +929,19 @@
       const flowVal = document.getElementById('flow-val');
       const flowBadge = document.getElementById('flow-badge');
       const flowSub = document.getElementById('flow-sub');
-      flowSub.textContent = `평균 푸어링/배수 유속 ${avgFlow} g/s (예상 자연 배수 ${Math.round(naturalDrainTime)}초)`;
+      flowSub.textContent = `평균 유속 ${avgFlow} g/s · 예상 자연 배수 ${Math.round(naturalDrainTime)}초`;
 
-      if (grind < 640) {
+      if (isChoking) {
         flowVal.textContent = '병목·막힘 주의';
-        flowBadge.textContent = '단일 추출구 정체'; flowBadge.className = 'badge badge-bad';
-      } else if (Math.abs(timeDiff) <= 35) {
+        flowBadge.textContent = '추출구 배수 정체'; flowBadge.className = 'badge badge-bad';
+      } else if (Math.abs(timeDiff) <= 30) {
         flowVal.textContent = '적정 저항';
         flowBadge.textContent = '유속 안정'; flowBadge.className = 'badge badge-good';
-      } else if (timeDiff < -35) {
-        flowVal.textContent = '공격적 푸어링 필요';
+      } else if (timeDiff < -30) {
+        flowVal.textContent = '빠른 푸어링 필요';
         flowBadge.textContent = '분쇄도 대비 시간 짧음'; flowBadge.className = 'badge badge-warn';
       } else {
-        flowVal.textContent = '세밀한 분할 푸어링';
+        flowVal.textContent = '분할 푸어링 권장';
         flowBadge.textContent = '분쇄도 대비 시간 김'; flowBadge.className = 'badge badge-warn';
       }
 
@@ -668,7 +967,7 @@
       } else if (balanceIndex <= 22) {
         flavorVal.textContent = '이상적인 스윗 스팟';
         flavorBadge.textContent = '최적 밸런스'; flavorBadge.className = 'badge badge-good';
-        flavorSub.textContent = '초기 산미를 풍부한 단맛이 감싸고 깔끔한 여운으로 마무리';
+        flavorSub.textContent = `${d.name}의 장점이 살아난 풍부한 단맛과 조화로운 여운`;
       } else {
         flavorVal.textContent = '쓴맛·떫은맛 과다';
         flavorBadge.textContent = '과다 용출'; flavorBadge.className = 'badge badge-bad';
@@ -676,46 +975,45 @@
       }
 
       // 7. 바리스타 실시간 진단 메시지
-      updateDiagnosis(grind, temp, time, water, ey, tds, balanceIndex, naturalDrainTime);
+      updateDiagnosis(d, dose, grind, temp, time, water, ratio, ey, tds, recGrind, recTime, isChoking);
 
       // 8. 차트 렌더링
-      drawTimeChart(time, ey, temp, grind);
-      drawScaChart(ey, tds);
+      drawTimeChart(time, recTime, ey, temp, grind, recGrind, d.themeColor);
+      drawScaChart(ey, tds, d.themeColor, d.themeDark);
     }
 
-    function updateDiagnosis(grind, temp, time, water, ey, tds, balanceIndex, naturalDrainTime) {
+    function updateDiagnosis(d, dose, grind, temp, time, water, ratio, ey, tds, recGrind, recTime, isChoking) {
       const titleEl = document.getElementById('diag-title');
       const descEl = document.getElementById('diag-desc');
       let tips = [];
 
       if (ey < 18.0) {
-        titleEl.textContent = '진단: 과소 추출 (Under-extracted) — 신맛이 날카롭고 단맛이 비어 있습니다';
-        if (grind > 860) tips.push(`현재 분쇄도(${grind}μm)가 너무 굵어 물이 성분을 충분히 녹이지 못하고 빠져나갑니다. 분쇄도를 780~820μm로 조여보세요.`);
-        if (temp < 90.5) tips.push(`물 온도(${temp}°C)가 낮아 당류 용출이 더딥니다. 온도를 92~94°C로 높여보세요.`);
-        if (time < 180) tips.push(`원두 30g 기준 추출 시간(${time}초)이 너무 짧습니다. 4회 분할 푸어링으로 3분 15초 이상 접촉 시간을 확보하세요.`);
-        if (water < 420) tips.push(`물의 양(${water}g)이 적어 농도는 진하지만 수율이 낮습니다. 물을 460~480g까지 늘리면 단맛이 더 살아납니다.`);
+        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 과소 추출 — 신맛이 날카롭고 단맛이 비어 있습니다`;
+        if (grind > recGrind + 60) tips.push(`원두 ${dose}g 기준 현재 분쇄도(${grind}μm)가 너무 굵습니다. ${recGrind}μm 부근으로 조여주세요.`);
+        if (temp < 90.5) tips.push(`물 온도(${temp}°C)가 낮아 당류 용출이 부족합니다. 92~94°C로 높여보세요.`);
+        if (time < recTime - 25) tips.push(`추출 시간(${time}초)이 짧습니다. 분할 푸어링으로 ${formatTime(recTime).split(' (')[0]} 내외까지 접촉 시간을 늘려주세요.`);
+        if (ratio < 14.5) tips.push(`추출 비율(1:${ratio.toFixed(1)})이 낮아 용매가 부족합니다. 물의 양을 ${Math.round(dose * 16)}g(1:16) 부근으로 늘려보세요.`);
       } else if (ey > 22.0) {
-        titleEl.textContent = '진단: 과다 추출 (Over-extracted) — 쓴맛과 떫은 드라이함이 지배적입니다';
-        if (grind < 720) tips.push(`원두 30g 대용량에서 ${grind}μm는 너무 가늡니다. 블루보틀 드리퍼의 단일 추출구가 미분에 막혀 후반부 잡미가 우려납니다. 800μm 이상으로 굵게 풀어주세요.`);
-        if (temp > 94.5) tips.push(`물 온도(${temp}°C)가 높아 후반부 고분자 쓴맛 성분이 과하게 녹아나옵니다. 91~93°C로 낮춰보세요.`);
-        if (time > 240) tips.push(`추출 시간(${time}초)이 4분을 넘기면서 떫은 성분이 유입되었습니다. 3분 30초 내외에서 드리퍼를 서버에서 치우세요(바이패스 활용).`);
+        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 과다 추출 — 쓴맛과 떫은 드라이함이 지배적입니다`;
+        if (isChoking || grind < recGrind - 60) tips.push(`원두 ${dose}g에서 ${grind}μm는 너무 가늘어 ${d.name} 하단 추출구에 병목이 생깁니다. ${recGrind}μm 이상으로 굵게 풀어주세요.`);
+        if (temp > 94.5) tips.push(`물 온도(${temp}°C)가 높아 후반부 잡미가 빠르게 녹아나옵니다. 91~93°C로 낮춰보세요.`);
+        if (time > recTime + 30) tips.push(`추출 시간(${time}초)이 너무 깁니다. ${formatTime(recTime).split(' (')[0]} 시점에 드리퍼를 서버에서 먼저 치우세요.`);
       } else {
-        titleEl.textContent = '진단: 이상적인 블루보틀 골든컵 구간 (Sweet Spot)';
-        tips.push(`추출 수율 ${ey.toFixed(1)}%, 농도 ${tds.toFixed(2)}%로 산미와 단맛, 바디감이 조화로운 구간입니다.`);
-        if (tds > 1.50) {
-          tips.push(`현재 비율(1:${(water/30).toFixed(1)})은 바디감이 매우 묵직한 스타일입니다. 아이스 커피나 우유 베리에이션, 혹은 진한 블렌드(벨라 도노반 등)에 잘 어울립니다.`);
-        } else if (tds < 1.20) {
-          tips.push(`현재 비율(1:${(water/30).toFixed(1)})은 차(Tea)처럼 맑고 가벼운 질감입니다. 화사한 에티오피아/케냐 싱글오리진의 플로럴 향미를 즐기기에 좋습니다.`);
+        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 이상적인 골든컵 구간 (Sweet Spot)`;
+        tips.push(`추출 수율 ${ey.toFixed(1)}%, 농도 ${tds.toFixed(2)}%(비율 1:${ratio.toFixed(1)})로 밸런스가 훌륭합니다.`);
+        if (currentDripper === 'hario') {
+          tips.push(`하리오 V60 특유의 빠른 유속 덕분에 산미가 투명하게 살아납니다. 중심부 위주로 나선형 푸어링을 유지하세요.`);
+        } else if (currentDripper === 'kalita') {
+          tips.push(`칼리타 웨이브의 3공 플랫베드가 물 빠짐을 일정하게 잡아주어 단맛과 바디감이 안정적으로 추출됩니다.`);
         } else {
-          tips.push(`플랫 베드 드리퍼 특유의 40개 모세관 리브가 30g의 커피 베드를 균일하게 적셔 높은 단맛을 이끌어내고 있습니다.`);
+          tips.push(`블루보틀 드리퍼의 40개 모세관 리브와 플랫베드가 ${dose}g의 커피층을 고르게 적셔 깊은 단맛을 만들어냅니다.`);
         }
       }
 
       descEl.textContent = tips.join(' ');
     }
 
-    // 차트 1: 추출 시간(0~300초)에 따른 신맛·단맛·쓴맛 순간 용출 속도 및 누적 수율
-    function drawTimeChart(targetTime, finalEy, temp, grind) {
+    function drawTimeChart(targetTime, recTime, finalEy, temp, grind, recGrind, themeColor) {
       const canvas = document.getElementById('timeChart');
       const ctx = canvas.getContext('2d');
       const W = canvas.width;
@@ -725,13 +1023,13 @@
       const padL = 42, padR = 42, padT = 22, padB = 34;
       const plotW = W - padL - padR;
       const plotH = H - padT - padB;
-      const maxT = 300;
+      const maxT = 330;
 
-      // 배경 스윗스팟 시간대 (180~225초) 표시
-      const x180 = padL + (180 / maxT) * plotW;
-      const x225 = padL + (225 / maxT) * plotW;
-      ctx.fillStyle = 'rgba(55, 178, 77, 0.08)';
-      ctx.fillRect(x180, padT, x225 - x180, plotH);
+      // 권장 스윗스팟 시간대 음영 표시
+      const x1 = padL + (Math.max(0, recTime - 20) / maxT) * plotW;
+      const x2 = padL + (Math.min(maxT, recTime + 20) / maxT) * plotW;
+      ctx.fillStyle = 'rgba(55, 178, 77, 0.09)';
+      ctx.fillRect(x1, padT, x2 - x1, plotH);
 
       // 격자선
       ctx.strokeStyle = '#e9ecef';
@@ -741,7 +1039,6 @@
         ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
       }
 
-      // 시간축 라벨
       ctx.fillStyle = '#868e96';
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'center';
@@ -751,72 +1048,73 @@
       });
 
       const tempBoost = 1 + (temp - 92.5) * 0.025;
-      const grindBoost = Math.pow(800 / grind, 0.5);
+      const grindBoost = Math.pow(recGrind / grind, 0.5);
 
-      // 1) 신맛 용출 곡선 (초기 30~110초 피크)
+      // 1) 산미 용출 곡선
       ctx.beginPath();
       ctx.strokeStyle = '#f59f00';
       ctx.lineWidth = 2.2;
       for (let t = 0; t <= maxT; t += 4) {
         const x = padL + (t / maxT) * plotW;
-        const rate = (t > 15 ? Math.pow((t - 15) / 55, 1.4) * Math.exp(-(t - 15) / 55) : 0) * 1.8 * tempBoost;
+        const rate = (t > 12 ? Math.pow((t - 12) / 50, 1.4) * Math.exp(-(t - 12) / 50) : 0) * 1.8 * tempBoost;
         const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
         t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
 
-      // 2) 단맛 용출 곡선 (중기 90~190초 피크)
+      // 2) 단맛 용출 곡선
       ctx.beginPath();
       ctx.strokeStyle = '#37b24d';
       ctx.lineWidth = 2.2;
       for (let t = 0; t <= maxT; t += 4) {
         const x = padL + (t / maxT) * plotW;
-        const rate = (t > 35 ? Math.pow((t - 35) / 110, 2.2) * Math.exp(-(t - 35) / 68) : 0) * 1.45 * tempBoost * grindBoost;
+        const peakT = recTime * 0.52;
+        const rate = (t > 30 ? Math.pow((t - 30) / peakT, 2.1) * Math.exp(-(t - 30) / (peakT * 0.62)) : 0) * 1.45 * tempBoost * grindBoost;
         const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
         t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
 
-      // 3) 쓴맛·떫은맛 용출 곡선 (후기 160초 이후 상승)
+      // 3) 쓴맛 용출 곡선
       ctx.beginPath();
       ctx.strokeStyle = '#7950f2';
       ctx.lineWidth = 2.2;
       for (let t = 0; t <= maxT; t += 4) {
         const x = padL + (t / maxT) * plotW;
-        const rate = (1 / (1 + Math.exp(-(t - 185) / 38))) * 0.85 * tempBoost * grindBoost;
+        const rate = (1 / (1 + Math.exp(-(t - (recTime * 0.88)) / 36))) * 0.85 * tempBoost * grindBoost;
         const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
         t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
 
-      // 4) 누적 추출 수율(EY) 곡선 (검은 실선, 우측 Y축 0~28%)
+      // 4) 누적 수율 곡선
       ctx.beginPath();
       ctx.strokeStyle = '#212529';
       ctx.lineWidth = 2.5;
-      const asymEy = finalEy / (1 - Math.exp(-targetTime / 108));
+      const tau = recTime * 0.52;
+      const asymEy = finalEy / (1 - Math.exp(-targetTime / tau));
       for (let t = 0; t <= maxT; t += 4) {
         const x = padL + (t / maxT) * plotW;
-        const curEy = t < 25 ? (t / 25) * 2.0 : Math.min(27, asymEy * (1 - Math.exp(-t / 108)));
+        const curEy = t < 20 ? (t / 20) * 2.0 : Math.min(27.5, asymEy * (1 - Math.exp(-t / tau)));
         const y = padT + plotH - (curEy / 28.0) * plotH;
         t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       }
       ctx.stroke();
 
-      // 현재 설정된 추출 종료 시간 수직 마커
+      // 현재 추출 종료 시간 마커
       const targetX = padL + (targetTime / maxT) * plotW;
       ctx.beginPath();
       ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = '#00a1e4';
+      ctx.strokeStyle = themeColor;
       ctx.lineWidth = 2;
       ctx.moveTo(targetX, padT);
       ctx.lineTo(targetX, padT + plotH);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // 종료 시점의 수율 점 표시
       const targetY = padT + plotH - (finalEy / 28.0) * plotH;
       ctx.beginPath();
-      ctx.fillStyle = '#00a1e4';
+      ctx.fillStyle = themeColor;
       ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
       ctx.fill();
 
@@ -829,8 +1127,7 @@
       ctx.fillStyle = '#212529'; ctx.fillText('— 누적 수율(EY)', padL + 225, padT + 14);
     }
 
-    // 차트 2: SCA 브루잉 컨트롤 차트 (X축: 수율 14~26%, Y축: TDS 0.8~2.0%)
-    function drawScaChart(ey, tds) {
+    function drawScaChart(ey, tds, themeColor, themeDark) {
       const canvas = document.getElementById('scaChart');
       const ctx = canvas.getContext('2d');
       const W = canvas.width;
@@ -844,13 +1141,11 @@
       const minEy = 14, maxEy = 26;
       const minTds = 0.8, maxTds = 2.0;
 
-      // 골든컵 이상적 영역 (EY 18~22%, TDS 1.15~1.45%)
       const gx1 = padL + ((18 - minEy) / (maxEy - minEy)) * plotW;
       const gx2 = padL + ((22 - minEy) / (maxEy - minEy)) * plotW;
       const gy1 = padT + plotH - ((1.45 - minTds) / (maxTds - minTds)) * plotH;
       const gy2 = padT + plotH - ((1.15 - minTds) / (maxTds - minTds)) * plotH;
 
-      // 배경 그리드
       ctx.strokeStyle = '#e9ecef';
       ctx.lineWidth = 1;
       [16, 18, 20, 22, 24].forEach(e => {
@@ -867,19 +1162,17 @@
         ctx.fillText(`${t.toFixed(1)}%`, padL - 6, y + 3);
       });
 
-      // 골든컵 박스 렌더링
-      ctx.fillStyle = 'rgba(0, 161, 228, 0.14)';
+      ctx.fillStyle = 'rgba(0, 161, 228, 0.12)';
       ctx.fillRect(gx1, gy1, gx2 - gx1, gy2 - gy1);
-      ctx.strokeStyle = '#00a1e4';
+      ctx.strokeStyle = themeColor;
       ctx.lineWidth = 1.5;
       ctx.strokeRect(gx1, gy1, gx2 - gx1, gy2 - gy1);
 
-      ctx.fillStyle = '#0077ac';
+      ctx.fillStyle = themeDark;
       ctx.font = 'bold 10px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('SCA Golden Cup', (gx1 + gx2) / 2, (gy1 + gy2) / 2 + 3);
 
-      // 사분면 라벨
       ctx.fillStyle = '#adb5bd';
       ctx.font = '10px sans-serif';
       ctx.fillText('과소·진함', padL + 28, padT + 16);
@@ -887,7 +1180,6 @@
       ctx.fillText('과소·연함', padL + 28, padT + plotH - 8);
       ctx.fillText('과다·연함', W - padR - 28, padT + plotH - 8);
 
-      // 현재 추출 포인트 찍기
       const curX = padL + ((Math.max(minEy, Math.min(maxEy, ey)) - minEy) / (maxEy - minEy)) * plotW;
       const curY = padT + plotH - ((Math.max(minTds, Math.min(maxTds, tds)) - minTds) / (maxTds - minTds)) * plotH;
 
