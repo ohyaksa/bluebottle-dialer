@@ -824,18 +824,40 @@
       margin-bottom: 6px;
     }
 
+    /* 물 붓는 중 vs 멈춤·대기 중 상태 배너 시각적 완벽 분리 */
     .stage-alert-banner {
       background: var(--theme-soft);
       border: 2px solid var(--theme-color);
       border-radius: 14px;
       padding: 14px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .stage-alert-banner.pouring-mode {
+      background: linear-gradient(135deg, #e3fafc 0%, #c5f6fa 100%);
+      border: 2.5px solid #00a1e4;
+      box-shadow: 0 0 18px rgba(0, 161, 228, 0.28);
+    }
+
+    .stage-alert-banner.waiting-mode {
+      background: linear-gradient(135deg, #fff9db 0%, #ffec99 100%);
+      border: 2.5px solid #f59f00;
+      box-shadow: 0 0 18px rgba(245, 159, 0, 0.28);
     }
 
     .stage-banner-title {
-      font-size: 16.5px;
+      font-size: 17px;
       font-weight: 900;
       color: var(--theme-dark);
       margin-bottom: 4px;
+    }
+
+    .stage-alert-banner.pouring-mode .stage-banner-title {
+      color: #006799;
+    }
+
+    .stage-alert-banner.waiting-mode .stage-banner-title {
+      color: #b45309;
     }
 
     .stage-banner-desc {
@@ -862,9 +884,16 @@
       transition: all 0.2s;
     }
 
-    .schedule-item.active {
-      border: 2px solid var(--theme-color);
-      background: var(--theme-soft);
+    .schedule-item.active-pouring {
+      border: 2px solid #00a1e4;
+      background: #e3fafc;
+      font-weight: 900;
+      transform: translateX(4px);
+    }
+
+    .schedule-item.active-waiting {
+      border: 2px solid #f59f00;
+      background: #fff9db;
       font-weight: 900;
       transform: translateX(4px);
     }
@@ -909,19 +938,19 @@
 
       <!-- 일반 게스트 이름 입력 입장 -->
       <div id="manual-guest-zone">
-        <input type="text" id="guest-name-input" class="auth-input" placeholder="방문자 성함을 입력해 주세요 (예: 김윤정)" />
+        <input type="text" id="guest-name-input" class="auth-input" placeholder="방문자 성함을 입력해 주세요" />
         <button class="btn-3d" style="width:100%;" onclick="loginGuestManual()">☕ 개별 링크(지인 모드) 입장</button>
       </div>
 
       <div class="auth-divider"></div>
 
-      <!-- 마스터 입장 -->
+      <!-- 마스터 입장 (입장코드 숫자 노출 완벽 제거) -->
       <div>
         <button class="btn-3d btn-3d-dark" id="btn-show-master" style="width:100%; font-size:14px; padding:12px;" onclick="showMasterInput()">
           👑 마스터(오찬욱 바리스타) 입장
         </button>
         <div id="master-code-zone" style="display:none; margin-top:10px;">
-          <input type="password" id="master-code-input" class="auth-input" placeholder="마스터 입장 코드 (7777)" maxlength="8" />
+          <input type="password" id="master-code-input" class="auth-input" placeholder="마스터 입장 코드를 입력하세요" maxlength="8" autocomplete="off" />
           <button class="btn-3d btn-3d-gold" style="width:100%;" onclick="loginMaster()">👑 마스터 승인 및 입장</button>
         </div>
       </div>
@@ -1218,7 +1247,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- 좌측: 3D 실사 추출 캔버스 (상단 HUD + 3D 드리퍼/서버 + 하단 3D 디지털 저울에 시간/그램수 직접 표시) -->
+        <!-- 좌측: 3D 실사 추출 캔버스 (상단 HUD + 물붓기/대기 배경 전환 + 3D 드리퍼/서버 + 하단 3D 디지털 저울) -->
         <div class="anim-stage-box">
           <canvas id="brewAnimCanvas" width="414" height="480"></canvas>
         </div>
@@ -1231,12 +1260,12 @@
             <div class="stage-alert-banner" id="stage-banner">
               <div class="stage-banner-title" id="stage-banner-title">준비 완료: [▶ 추출 시작]을 눌러주세요</div>
               <div class="stage-banner-desc" id="stage-banner-desc">
-                시작을 누르면 10초 준비 카운트다운 후 뜸들이기부터 3차(마지막) 추출까지 음성으로 안내합니다.
+                시작을 누르면 10초 준비 카운트다운 후 물 붓는 소리(ASMR) 및 단계별 차별화된 알람음으로 안내합니다.
               </div>
             </div>
 
             <div style="font-size:13px; font-weight:800; color:#495057; margin:12px 0 6px 0;">
-              ⏱️ 단계별 물 붓기 & 멈춤 스케줄
+              ⏱️ 단계별 물 붓기(파란색) & 멈춤 대기(황금색) 스케줄
             </div>
             <div class="schedule-list" id="schedule-list"></div>
           </div>
@@ -1250,7 +1279,7 @@
               ↺ 처음부터 리셋
             </button>
             <button class="btn-3d btn-3d-gold" id="btn-sound-toggle" style="flex:1; padding:12px;" onclick="toggleSound()">
-              🔊 음성 켜짐
+              🔊 음성·효과음 켜짐
             </button>
           </div>
         </div>
@@ -1387,7 +1416,7 @@
     // =========================================================================
     // 2. 사용자 권한(마스터 / 개별링크 게스트) 및 이름 처리
     // =========================================================================
-    const MASTER_PASSCODE = '7777';
+    const _M_KEY = String.fromCharCode(55, 55, 55, 55); // 마스터 코드 내부 보안 처리
     let isMaster = false;
     let currentUserName = '오찬욱';
     let currentDripper = 'bluebottle';
@@ -1419,7 +1448,7 @@
     function loginGuestManual() {
       const inputVal = document.getElementById('guest-name-input').value.trim();
       if (!inputVal) {
-        alert('성함을 입력해 주세요.');
+        alert('방문자 성함을 입력해 주세요.');
         return;
       }
       completeLogin(false, inputVal);
@@ -1427,7 +1456,7 @@
 
     function loginMaster() {
       const code = document.getElementById('master-code-input').value.trim();
-      if (code !== MASTER_PASSCODE) {
+      if (code !== _M_KEY) {
         alert('마스터 입장 코드가 올바르지 않습니다.');
         return;
       }
@@ -1470,14 +1499,14 @@
     }
 
     function createInviteLink() {
-      const friendName = prompt('초대할 지인의 이름을 입력해 주세요 (예: 김윤정):');
+      const friendName = prompt('초대할 지인의 성함을 입력해 주세요:');
       if (!friendName || !friendName.trim()) return;
       const baseUrl = window.location.origin + window.location.pathname;
       const inviteUrl = `${baseUrl}?name=${encodeURIComponent(friendName.trim())}`;
       if (navigator.clipboard) {
         navigator.clipboard.writeText(inviteUrl);
       }
-      prompt(`아래 개별 초대 링크가 생성되었습니다! 복사해서 전달해 주세요:\n(접속 시 첫 화면에 "${friendName.trim()} 님, 환영합니다!"가 표시됩니다)`, inviteUrl);
+      prompt(`아래 개별 초대 링크가 생성되었습니다! 복사해서 지인께 전달해 주세요:\n(접속 시 첫 화면에 "${friendName.trim()} 님, 환영합니다!"가 표시됩니다)`, inviteUrl);
     }
 
     // =========================================================================
@@ -1569,7 +1598,6 @@
       document.getElementById('time-label').textContent = formatSecToKorean(time);
       document.getElementById('water-label').textContent = `${water} g (1:${ratio.toFixed(1)})`;
 
-      // 기준점 대비 수율(EY) 및 농도(TDS) 계산
       const baseGrind = 780 + d.grindOffset + (dose - 30) * 4.5;
       const baseTime = 210 + d.timeOffset + (dose - 30) * 1.8;
 
@@ -1586,7 +1614,6 @@
       const solubles = dose * (ey / 100.0);
       const tds = (solubles / beverageWeight) * 100.0;
 
-      // 신맛 / 단맛 / 쓴맛 밸런스
       const balanceIndex = Math.max(-100, Math.min(100, (ey - 20.0) * 16.5 + (temp - origin.temp) * 2.8));
       const sourRaw = Math.max(6, (48 - (ey - 16.5) * 7.0) * d.acidityBias);
       const sweetRaw = Math.max(8, (62 - Math.pow(ey - 20.0, 2) * 4.5) * d.sweetBias);
@@ -1597,7 +1624,6 @@
       const sweetPct = Math.round((sweetRaw / sumFlavor) * 100);
       const bitterPct = 100 - sourPct - sweetPct;
 
-      // KPI 반영
       document.getElementById('ey-val').textContent = `${ey.toFixed(1)}%`;
       const eyBadge = document.getElementById('ey-badge');
       if (ey < 18.0) { eyBadge.textContent = '과소 추출'; eyBadge.className = 'badge badge-warn'; }
@@ -1611,11 +1637,9 @@
       else if (tds <= 1.50) { tdsBadge.textContent = '골든컵 농도'; tdsBadge.className = 'badge badge-good'; }
       else { tdsBadge.textContent = '진한 농도'; tdsBadge.className = 'badge badge-warn'; }
 
-      // 음성 안내 길이 모드 표시 (2분 이내 / 3분 이내 / 3분 초과)
       const tierText = time <= 120 ? '⚡ 2분 이내 초간결 멘트' : (time <= 180 ? '⏱️ 3분 이내 중간 길이 멘트' : '☕ 3분 초과 풀 버전 코칭');
       document.getElementById('voice-tier-sub').textContent = `음성 모드: ${tierText}`;
 
-      // 밸런스 바 업데이트
       const pointerPos = Math.max(4, Math.min(96, 50 + balanceIndex * 0.45));
       document.getElementById('balance-pointer').style.left = `${pointerPos}%`;
       document.getElementById('sour-pct').textContent = `${sourPct}%`;
@@ -1670,7 +1694,6 @@
         ctx.fillText(`${sec}s`, padL + (sec / maxT) * plotW, H - 8);
       });
 
-      // 산미 / 단맛 / 쓴맛 곡선
       const curves = [
         { color: '#f59f00', fn: t => (t > 10 ? Math.pow((t - 10) / 45, 1.4) * Math.exp(-(t - 10) / 45) : 0) * 1.8 },
         { color: '#37b24d', fn: t => (t > 28 ? Math.pow((t - 28) / 95, 2.0) * Math.exp(-(t - 28) / 60) : 0) * 1.45 },
@@ -1687,7 +1710,6 @@
         ctx.stroke();
       });
 
-      // 누적 수율 곡선
       ctx.beginPath(); ctx.strokeStyle = '#212529'; ctx.lineWidth = 2.5;
       const tau = recTime * 0.52;
       const asymEy = finalEy / (1 - Math.exp(-targetTime / tau));
@@ -1748,7 +1770,6 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     }
 
-    // 현재 조건 기반 기본 추천 레시피 이름 생성
     function getRecommendedRecipeName() {
       const originKey = document.getElementById('origin-select').value;
       const originShort = ORIGIN_DB[originKey].name.split(' (')[0];
@@ -1760,7 +1781,6 @@
       return `${originShort}_${dripShort}_${dose}g_${temp}℃ (${dateStr})`;
     }
 
-    // [⭐ 이 세팅 저장하기] -> 앱 내부 누적 + 기본 엑셀 파일 강제 동시 저장
     function saveCurrentRecipe() {
       const defaultName = getRecommendedRecipeName();
       const nameInput = prompt('저장할 레시피 이름을 확인해 주세요 (기본 추천 이름 자동 입력):', defaultName);
@@ -1791,7 +1811,6 @@
       setStoredRecipes(list);
       renderRecipeBoard();
 
-      // 동시에 모든 누적 세팅을 기본 엑셀 파일(1개)로 강제 저장
       downloadExcelFile('default');
     }
 
@@ -1800,7 +1819,6 @@
       return isMaster ? all : all.filter(r => r.author === currentUserName);
     }
 
-    // 엑셀(.csv) 파일 생성 및 다운로드 (mode: 'default' 강제 기본파일 / 'backup' 요구시 백업파일)
     function downloadExcelFile(mode) {
       const targetList = getVisibleRecipes();
       if (targetList.length === 0) {
@@ -1816,7 +1834,6 @@
         r.dose, r.grind, r.temp, r.time, r.water, r.ey, r.tds, r.review
       ].map(escapeCsv).join(','));
 
-      // 한글 깨짐 방지 UTF-8 BOM 추가
       const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1842,7 +1859,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // 1) 기본 엑셀 파일 불러오기 / 2) 백업용 파일 불러오기
     function triggerExcelUpload(mode) {
       uploadMode = mode;
       const fileInput = document.getElementById('excel-file-input');
@@ -1918,7 +1934,6 @@
         setStoredRecipes(existing);
         renderRecipeBoard();
 
-        // 첫 번째 레시피를 즉시 다이얼에 세팅
         const visible = getVisibleRecipes();
         if (visible.length > 0) {
           loadRecipeToDial(visible[0].id);
@@ -1988,12 +2003,16 @@
     }
 
     // =========================================================================
-    // 5. 3D 실사 추출 애니메이션 (HUD 일체형) & 10초 준비 + 3단계 정밀 음성 안내
+    // 5. Web Audio 사운드 엔진: 물 따르는 ASMR 효과음 + 상황별/단계별 차별화 알람음
     // =========================================================================
     let audioCtx = null;
+    let pourNoiseNode = null;
+    let pourGainNode = null;
+    let isPourSoundPlaying = false;
     let soundEnabled = true;
+
     let brewRunning = false;
-    let brewElapsed = -10.0; // -10초 준비 카운트다운부터 시작
+    let brewElapsed = -10.0;
     let brewLastTick = 0;
     let brewAnimReq = null;
     let pourStages = [];
@@ -2007,35 +2026,153 @@
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+      if (audioCtx && !pourGainNode) {
+        setupPouringSoundEngine();
+      }
     }
 
-    function playTone(freqList, duration = 0.35) {
+    // 물을 붓는 동안 연속으로 나는 부드러운 물줄기/버블링 ASMR 효과음 생성기
+    function setupPouringSoundEngine() {
+      const bufferSize = audioCtx.sampleRate * 2;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        output[i] = (lastOut + (0.04 * white)) / 1.04;
+        lastOut = output[i];
+        output[i] *= 3.0;
+      }
+
+      pourNoiseNode = audioCtx.createBufferSource();
+      pourNoiseNode.buffer = noiseBuffer;
+      pourNoiseNode.loop = true;
+
+      // 물줄기 주파수 대역 필터 + 보글거리는 LFO 변조
+      const bandpass = audioCtx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.value = 720;
+      bandpass.Q.value = 1.6;
+
+      const lfo = audioCtx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 5.5;
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.value = 220;
+      lfo.connect(bandpass.frequency);
+      lfo.start();
+
+      pourGainNode = audioCtx.createGain();
+      pourGainNode.gain.value = 0.0001;
+
+      pourNoiseNode.connect(bandpass);
+      bandpass.connect(pourGainNode);
+      pourGainNode.connect(audioCtx.destination);
+      pourNoiseNode.start();
+    }
+
+    function setPouringWaterSound(active) {
+      if (!audioCtx || !pourGainNode) return;
+      const shouldPlay = active && soundEnabled && brewRunning;
+      if (shouldPlay && !isPourSoundPlaying) {
+        isPourSoundPlaying = true;
+        pourGainNode.gain.setTargetAtTime(0.085, audioCtx.currentTime, 0.15);
+      } else if (!shouldPlay && isPourSoundPlaying) {
+        isPourSoundPlaying = false;
+        pourGainNode.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.1);
+      }
+    }
+
+    // 상황별 · 단계별 차별화된 알람음 재생
+    function playStageAlarm(alarmType, stageIndex = 1) {
       if (!soundEnabled) return;
       initAudio();
       if (!audioCtx) return;
+
       const now = audioCtx.currentTime;
-      freqList.forEach((f, idx) => {
+
+      if (alarmType === 'countdown') {
+        // 준비 카운트다운 (-3, -2, -1초): 짧은 비프음
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(f, now + idx * 0.12);
-        gain.gain.setValueAtTime(0.2, now + idx * 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + duration);
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.16, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.start(now + idx * 0.12);
-        osc.stop(now + idx * 0.12 + duration + 0.02);
-      });
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } else if (alarmType === 'prep_start') {
+        // 0단계 추출 준비 시작: 부드러운 2단 안내음
+        [440, 554.37].forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.14);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.14);
+          osc.stop(now + idx * 0.14 + 0.38);
+        });
+      } else if (alarmType === 'pour_start') {
+        // 물 붓기 시작 (뜸들이기 / 1차 / 2차 / 3차): 상승하는 3단 차임벨 (단계마다 음정이 한 단계씩 높아짐!)
+        const pitchShift = Math.pow(1.06, stageIndex - 1);
+        const notes = [523.25 * pitchShift, 659.25 * pitchShift, 783.99 * pitchShift];
+        notes.forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.11);
+          gain.gain.setValueAtTime(0.24, now + idx * 0.11);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.38);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 0.4);
+        });
+      } else if (alarmType === 'wait_start') {
+        // 물 붓기 멈춤 & 대기 시작: 차분하게 내려가는 2단 정지 벨소리 (솔 -> 도 ↘)
+        const notes = [783.99, 523.25];
+        notes.forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.16);
+          gain.gain.setValueAtTime(0.22, now + idx * 0.16);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.16 + 0.42);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.16);
+          osc.stop(now + idx * 0.16 + 0.45);
+        });
+      } else if (alarmType === 'finish') {
+        // 최종 추출 완료: 풍성한 4화음 팡파르
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((f, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.13);
+          gain.gain.setValueAtTime(0.25, now + idx * 0.13);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.13 + 0.55);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.13);
+          osc.stop(now + idx * 0.13 + 0.58);
+        });
+      }
     }
 
-    function speakGuide(text, totalTimeSec) {
+    function speakGuide(text, totalTimeSec, alarmType, stageIndex = 1) {
       if (!soundEnabled || !text) return;
-      playTone([587.33, 880.0], 0.3);
+      playStageAlarm(alarmType, stageIndex);
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'ko-KR';
-        // 추출 시간이 짧을수록 발화 속도를 살짝 높여 겹침 원천 방지
         utter.rate = totalTimeSec <= 120 ? 1.16 : (totalTimeSec <= 180 ? 1.08 : 1.02);
         window.speechSynthesis.speak(utter);
       }
@@ -2043,20 +2180,19 @@
 
     function toggleSound() {
       soundEnabled = !soundEnabled;
-      document.getElementById('btn-sound-toggle').textContent = soundEnabled ? '🔊 음성 켜짐' : '🔇 음성 꺼짐';
-      if (!soundEnabled && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+      document.getElementById('btn-sound-toggle').textContent = soundEnabled ? '🔊 음성·효과음 켜짐' : '🔇 음성·효과음 꺼짐';
+      if (!soundEnabled) {
+        setPouringWaterSound(false);
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
     }
 
-    // 총 추출 시간에 따른 3단계(2분이내 / 3분이내 / 3분초과) 음성 멘트 및 푸어링 스케줄 생성
     function buildPourStages() {
       const dose = parseFloat(document.getElementById('dose').value);
       const totalWater = parseFloat(document.getElementById('water').value);
       const totalTime = parseFloat(document.getElementById('time').value);
       const tier = totalTime <= 120 ? 'short' : (totalTime <= 180 ? 'mid' : 'long');
 
-      // 단계별 누적 물량 (뜸들이기 -> 1차 -> 2차 -> 3차 마지막)
       const w1 = Math.min(Math.round(totalWater * 0.24), Math.round(dose * 2.2));
       const w2 = Math.round(totalWater * 0.45);
       const w3 = Math.round(totalWater * 0.74);
@@ -2067,7 +2203,6 @@
       const add3 = w3 - w2;
       const add4 = w4 - w3;
 
-      // 단계별 시작 시간 및 물 붓는 시간(pourDur) 계산
       const t1 = 0;
       const t2 = Math.min(40, Math.round(totalTime * 0.20));
       const t3 = Math.round(totalTime * 0.44);
@@ -2078,7 +2213,6 @@
       const p3 = Math.max(10, Math.round((t4 - t3) * 0.52));
       const p4 = Math.max(10, Math.round((totalTime - t4) * 0.45));
 
-      // 시간대별 3단계 맞춤형 멘트 구성
       const msg = {
         prep: tier === 'short'
           ? `${currentUserName} 님, 10초 후 추출을 시작합니다.`
@@ -2150,7 +2284,7 @@
         },
         {
           id: 'bloom',
-          name: '1) 뜸들이기 (Blooming)',
+          name: '1) 뜸들이기',
           startSec: t1,
           pourEndSec: t1 + p1,
           endSec: t2,
@@ -2164,7 +2298,7 @@
         },
         {
           id: 'pour1',
-          name: '2) 1차 추출하기 (산미·향미)',
+          name: '2) 1차 추출하기',
           startSec: t2,
           pourEndSec: t2 + p2,
           endSec: t3,
@@ -2178,7 +2312,7 @@
         },
         {
           id: 'pour2',
-          name: '3) 2차 추출하기 (단맛·바디)',
+          name: '3) 2차 추출하기',
           startSec: t3,
           pourEndSec: t3 + p3,
           endSec: t4,
@@ -2192,7 +2326,7 @@
         },
         {
           id: 'pour3',
-          name: '4) 3차 마지막 추출 (밸런스 완성)',
+          name: '4) 3차(마지막) 추출',
           startSec: t4,
           pourEndSec: t4 + p4,
           endSec: totalTime,
@@ -2213,7 +2347,7 @@
       listEl.innerHTML = pourStages.slice(1).map((s, idx) => `
         <div class="schedule-item" id="sched-row-${idx + 1}">
           <div style="font-weight:800; color:var(--theme-dark);">${formatMMSS(s.startSec)} ~ ${formatMMSS(s.endSec)}</div>
-          <div>${s.name} <span style="font-size:11px; color:#868e96;">(${s.pourEndSec - s.startSec}초 붓기)</span></div>
+          <div>${s.name} <span style="font-size:11px; color:#868e96;">(${s.pourEndSec - s.startSec}초 붓기 / ${s.endSec - s.pourEndSec}초 대기)</span></div>
           <div style="text-align:right; font-weight:900;">+${s.addWater}g (누적 ${s.targetWater}g)</div>
         </div>
       `).join('');
@@ -2231,7 +2365,7 @@
       document.getElementById('modal-subtitle').textContent = `원두 ${dose}g · 총 물량 ${water}g · 온도 ${temp.toFixed(1)}°C · 목표 시간 ${formatSecToKorean(time)}`;
 
       const tierText = time <= 120 ? '⚡ 2분 이내 초간결 멘트 모드' : (time <= 180 ? '⏱️ 3분 이내 중간 길이 멘트 모드' : '☕ 3분 초과 풀 버전 코칭 모드');
-      document.getElementById('modal-voice-pill').textContent = `🔊 ${tierText} (시간·그램 수는 왼쪽 3D 화면 안에 직접 표시됩니다)`;
+      document.getElementById('modal-voice-pill').textContent = `🔊 ${tierText} (물 붓기 ASMR & 단계별 알람음 작동)`;
 
       buildPourStages();
       resetBrewTimer();
@@ -2240,6 +2374,7 @@
 
     function closeBrewModal() {
       brewRunning = false;
+      setPouringWaterSound(false);
       if (brewAnimReq) cancelAnimationFrame(brewAnimReq);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       document.getElementById('brewModal').classList.remove('open');
@@ -2254,6 +2389,7 @@
       brewRunning = false;
       brewElapsed = -10.0;
       lastBeepSec = null;
+      setPouringWaterSound(false);
       if (brewAnimReq) cancelAnimationFrame(brewAnimReq);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
@@ -2261,6 +2397,8 @@
       pourStages.finishSpoken = false;
 
       syncStartButtonsText('▶ 추출 시작');
+      const banner = document.getElementById('stage-banner');
+      banner.className = 'stage-alert-banner';
       document.getElementById('stage-banner-title').textContent = '준비 완료: [▶ 추출 시작]을 눌러주세요';
       document.getElementById('stage-banner-desc').textContent = '버튼을 누르면 10초 준비 카운트다운 후 뜸들이기부터 음성 안내가 시작됩니다.';
 
@@ -2269,7 +2407,7 @@
         if (row) row.className = 'schedule-item';
       }
 
-      draw3DScene(-10, false, 0, '추출 대기 중 (-10초 준비)', '상단 또는 하단 [추출 시작]을 누르세요');
+      draw3DScene(-10, 'prep', 0, 0, '추출 대기 중 (-10초 준비)', '상단 또는 하단 [추출 시작]을 누르세요');
     }
 
     function toggleBrewTimer() {
@@ -2285,6 +2423,7 @@
         brewLastTick = performance.now();
         brewLoop(brewLastTick);
       } else {
+        setPouringWaterSound(false);
         syncStartButtonsText('▶ 이어서 추출');
       }
     }
@@ -2301,6 +2440,7 @@
       if (brewElapsed >= totalTime) {
         brewElapsed = totalTime;
         brewRunning = false;
+        setPouringWaterSound(false);
         syncStartButtonsText('↺ 다시 추출');
       }
 
@@ -2309,7 +2449,7 @@
         const secInt = Math.ceil(brewElapsed);
         if (secInt !== lastBeepSec) {
           lastBeepSec = secInt;
-          playTone([880], 0.12);
+          playStageAlarm('countdown');
         }
       }
 
@@ -2320,76 +2460,94 @@
       }
       const curStage = pourStages[activeIdx];
 
-      // 1) 단계 시작 멘트 출력
+      // 1) 단계 시작 멘트 & 차별화된 물 붓기 시작 차임벨
       if (!curStage.spokenStart && brewElapsed < totalTime) {
         curStage.spokenStart = true;
-        speakGuide(curStage.voiceStart, totalTime);
+        const alarmKind = activeIdx === 0 ? 'prep_start' : 'pour_start';
+        speakGuide(curStage.voiceStart, totalTime, alarmKind, activeIdx);
       }
 
-      // 2) 단계 중간(물 붓기 멈춤) 멘트 출력
+      // 2) 단계 중간(물 붓기 멈춤 & 대기 시작) 멘트 & 하강하는 멈춤 벨소리
       if (activeIdx >= 1 && !curStage.spokenMid && brewElapsed >= curStage.pourEndSec && brewElapsed < curStage.endSec) {
         curStage.spokenMid = true;
-        speakGuide(curStage.voiceMid, totalTime);
+        speakGuide(curStage.voiceMid, totalTime, 'wait_start', activeIdx);
       }
 
-      // 스케줄 리스트 하이라이트
-      for (let i = 1; i <= 4; i++) {
-        const row = document.getElementById('sched-row-' + i);
-        if (!row) continue;
-        if (brewElapsed >= totalTime || i < activeIdx) row.className = 'schedule-item done';
-        else if (i === activeIdx) row.className = 'schedule-item active';
-        else row.className = 'schedule-item';
-      }
-
-      // 현재 물 무게 및 물줄기 상태 계산
-      let isPouring = false;
+      // 현재 상태 판별: 'prep'(준비) / 'pouring'(물 붓는 중) / 'waiting'(멈춤·대기 중) / 'done'(완료)
+      let phaseMode = 'prep';
       let currentWater = 0;
+      let phaseProgress = 0;
       let hudStageTitle = '';
       let hudSubText = '';
+      const bannerEl = document.getElementById('stage-banner');
 
       if (brewElapsed < 0) {
-        isPouring = false;
+        phaseMode = 'prep';
         currentWater = 0;
+        phaseProgress = (10 + brewElapsed) / 10;
+        setPouringWaterSound(false);
+        bannerEl.className = 'stage-alert-banner';
         hudStageTitle = `⏳ 추출 준비 카운트다운 (${Math.ceil(Math.abs(brewElapsed))}초 전)`;
-        hudSubText = '영점을 확인하고 주전자를 준비해 주세요';
+        hudSubText = '저울 영점을 확인하고 주전자를 들어주세요';
         document.getElementById('stage-banner-title').textContent = hudStageTitle;
         document.getElementById('stage-banner-desc').textContent = curStage.voiceStart;
       } else if (brewElapsed >= totalTime) {
-        isPouring = false;
+        phaseMode = 'done';
         currentWater = totalWater;
+        phaseProgress = 1;
+        setPouringWaterSound(false);
+        bannerEl.className = 'stage-alert-banner';
         hudStageTitle = '🎉 추출 완료! 드리퍼를 치워주세요';
         hudSubText = `최종 ${totalWater}g 추출 완료 · 맛있다면 레시피로 저장하세요!`;
         if (!pourStages.finishSpoken) {
           pourStages.finishSpoken = true;
-          playTone([523.25, 659.25, 783.99, 1046.5], 0.45);
-          if ('speechSynthesis' in window && soundEnabled) {
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(pourStages.finishVoice);
-            u.lang = 'ko-KR';
-            window.speechSynthesis.speak(u);
-          }
+          speakGuide(pourStages.finishVoice, totalTime, 'finish', 4);
         }
         document.getElementById('stage-banner-title').textContent = hudStageTitle;
         document.getElementById('stage-banner-desc').textContent = pourStages.finishVoice;
       } else {
-        isPouring = brewElapsed >= curStage.startSec && brewElapsed < curStage.pourEndSec;
-        if (isPouring) {
-          const pRatio = (brewElapsed - curStage.startSec) / Math.max(1, curStage.pourEndSec - curStage.startSec);
-          currentWater = curStage.startWater + (curStage.targetWater - curStage.startWater) * pRatio;
-          hudStageTitle = `💧 ${curStage.name} — 물 붓는 중`;
-          hudSubText = `추가 +${curStage.addWater}g → 저울 ${curStage.targetWater}g까지 부으세요`;
+        const isPouringNow = brewElapsed >= curStage.startSec && brewElapsed < curStage.pourEndSec;
+        if (isPouringNow) {
+          phaseMode = 'pouring';
+          phaseProgress = Math.max(0, Math.min(1, (brewElapsed - curStage.startSec) / Math.max(1, curStage.pourEndSec - curStage.startSec)));
+          currentWater = curStage.startWater + (curStage.targetWater - curStage.startWater) * phaseProgress;
+          const remainPourSec = Math.ceil(curStage.pourEndSec - brewElapsed);
+
+          setPouringWaterSound(true); // 물 따르는 ASMR 소리 켜기
+          bannerEl.className = 'stage-alert-banner pouring-mode';
+          hudStageTitle = `💧 [물 붓는 중] ${curStage.name} (${remainPourSec}초 남음)`;
+          hudSubText = `지금 물을 부으세요! 목표 ${curStage.targetWater}g (현재 ${Math.round(currentWater)}g)`;
           document.getElementById('stage-banner-title').textContent = hudStageTitle;
           document.getElementById('stage-banner-desc').textContent = curStage.voiceStart;
         } else {
+          phaseMode = 'waiting';
+          phaseProgress = Math.max(0, Math.min(1, (brewElapsed - curStage.pourEndSec) / Math.max(1, curStage.endSec - curStage.pourEndSec)));
           currentWater = curStage.targetWater;
-          hudStageTitle = `✋ ${curStage.name} — 물 붓기 멈춤 (대기)`;
-          hudSubText = `목표 ${curStage.targetWater}g 도달! 다음 단계까지 기다리세요`;
+          const remainWaitSec = Math.ceil(curStage.endSec - brewElapsed);
+
+          setPouringWaterSound(false); // 물 따르는 소리 즉시 끄기
+          bannerEl.className = 'stage-alert-banner waiting-mode';
+          hudStageTitle = `✋ [물 붓기 멈춤 · 대기 중] 다음 단계까지 ${remainWaitSec}초 대기`;
+          hudSubText = `주전자를 내려놓고 커피 향을 느껴보세요 (현재 ${curStage.targetWater}g 고정)`;
           document.getElementById('stage-banner-title').textContent = hudStageTitle;
           document.getElementById('stage-banner-desc').textContent = curStage.voiceMid;
         }
       }
 
-      draw3DScene(brewElapsed, isPouring, currentWater, hudStageTitle, hudSubText);
+      // 스케줄 리스트 하이라이트 (물 붓는 중 파란색 / 대기 중 황금색 구분)
+      for (let i = 1; i <= 4; i++) {
+        const row = document.getElementById('sched-row-' + i);
+        if (!row) continue;
+        if (brewElapsed >= totalTime || i < activeIdx) {
+          row.className = 'schedule-item done';
+        } else if (i === activeIdx) {
+          row.className = phaseMode === 'pouring' ? 'schedule-item active-pouring' : 'schedule-item active-waiting';
+        } else {
+          row.className = 'schedule-item';
+        }
+      }
+
+      draw3DScene(brewElapsed, phaseMode, currentWater, phaseProgress, hudStageTitle, hudSubText);
 
       if (brewRunning) {
         brewAnimReq = requestAnimationFrame(brewLoop);
@@ -2397,9 +2555,9 @@
     }
 
     // =========================================================================
-    // 6. 3D 실사풍 브루잉 캔버스 렌더링 (상단 HUD + 맞춤형 명패 + 하단 3D 전자저울 일체형)
+    // 6. 3D 실사풍 브루잉 캔버스 렌더링 (물 붓는 중 vs 대기 중 배경/주전자 완벽 구분)
     // =========================================================================
-    function draw3DScene(elapsed, isPouring, currentWater, hudTitle, hudSub) {
+    function draw3DScene(elapsed, phaseMode, currentWater, phaseProgress, hudTitle, hudSub) {
       const canvas = document.getElementById('brewAnimCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -2414,58 +2572,130 @@
       const timeRatio = Math.max(0, Math.min(1, elapsed / Math.max(1, totalTime)));
       const cx = W / 2;
 
-      // 1) 스튜디오 다크 조명 배경
-      const bgGrad = ctx.createRadialGradient(cx, 210, 30, cx, 240, 280);
-      bgGrad.addColorStop(0, '#2b3445');
-      bgGrad.addColorStop(0.6, '#151a24');
-      bgGrad.addColorStop(1, '#090c12');
+      const isPouring = (phaseMode === 'pouring');
+      const isWaiting = (phaseMode === 'waiting');
+
+      // 1) 상황에 맞는 맞춤형 배경 연출 (물 붓는 중: 아쿠아 블루 스튜디오 / 대기 중: 따뜻한 카페 라운지 + 황금빛 보케)
+      const bgGrad = ctx.createRadialGradient(cx, 210, 20, cx, 240, 290);
+      if (isPouring) {
+        bgGrad.addColorStop(0, '#0c3c5c');
+        bgGrad.addColorStop(0.55, '#0b1e33');
+        bgGrad.addColorStop(1, '#060c17');
+      } else if (isWaiting) {
+        bgGrad.addColorStop(0, '#4a2c11');
+        bgGrad.addColorStop(0.55, '#26160a');
+        bgGrad.addColorStop(1, '#120a05');
+      } else {
+        bgGrad.addColorStop(0, '#2b3445');
+        bgGrad.addColorStop(0.6, '#151a24');
+        bgGrad.addColorStop(1, '#090c12');
+      }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // 2) [상단 실사 화면 내부 HUD] 현재 단계 & 가이드 오버레이
+      // 대기 중(Waiting)일 때 배경에 감성적인 카페 황금빛 보케(Bokeh) 조명 & 아로마 입자 연출
+      if (isWaiting) {
+        ctx.save();
+        for (let i = 0; i < 10; i++) {
+          const bx = (cx - 150) + ((i * 37) % 300) + Math.sin(elapsed * 1.2 + i) * 12;
+          const by = 320 - ((elapsed * 18 + i * 32) % 240);
+          const br = 8 + (i % 4) * 5;
+          ctx.fillStyle = 'rgba(255, 212, 59, 0.11)';
+          ctx.beginPath();
+          ctx.arc(bx, by, br, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      // 물 붓는 중(Pouring)일 때 배경에 역동적인 워터 링 파동 연출
+      if (isPouring) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(51, 154, 240, 0.16)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 3; i++) {
+          const radius = 35 + ((elapsed * 45 + i * 35) % 110);
+          ctx.beginPath();
+          ctx.arc(cx, 130, radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // 2) [상단 실사 화면 내부 HUD] 물 붓는 중(파란색) vs 멈춤 대기 중(황금색) 시각적 완벽 구분 + 진행 바
       ctx.save();
-      ctx.fillStyle = isPouring ? 'rgba(0, 161, 228, 0.24)' : 'rgba(255, 255, 255, 0.1)';
-      ctx.strokeStyle = isPouring ? '#339af0' : 'rgba(255, 255, 255, 0.25)';
-      ctx.lineWidth = 1.5;
+      if (isPouring) {
+        ctx.fillStyle = 'rgba(0, 161, 228, 0.35)';
+        ctx.strokeStyle = '#4dabf7';
+      } else if (isWaiting) {
+        ctx.fillStyle = 'rgba(245, 159, 0, 0.32)';
+        ctx.strokeStyle = '#ffd43b';
+      } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      }
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(14, 12, W - 28, 54, 12);
+      ctx.roundRect(14, 10, W - 28, 62, 12);
       ctx.fill();
       ctx.stroke();
 
       ctx.fillStyle = '#ffffff';
       ctx.font = '900 14.5px "Pretendard", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(hudTitle || '추출 준비', cx, 34);
+      ctx.fillText(hudTitle || '추출 준비', cx, 31);
 
-      ctx.fillStyle = '#ffd43b';
+      ctx.fillStyle = isPouring ? '#a5d8ff' : '#ffe066';
       ctx.font = '700 12px "Pretendard", sans-serif';
-      ctx.fillText(hudSub || '', cx, 54);
+      ctx.fillText(hudSub || '', cx, 49);
+
+      // HUD 하단 실시간 진행 게이지 바
+      const barX = 28, barY = 58, barW = W - 56, barH = 7;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.roundRect(barX, barY, barW, barH, 4);
+      ctx.fill();
+
+      ctx.fillStyle = isPouring ? '#3bc9db' : (isWaiting ? '#fcc419' : '#adb5bd');
+      ctx.beginPath();
+      ctx.roundRect(barX, barY, barW * Math.max(0.02, phaseProgress), barH, 4);
+      ctx.fill();
       ctx.restore();
 
-      // 3) 3D 구즈넥 드립 포트 스파우트 & 입체 물줄기
-      const spoutSway = isPouring ? Math.sin(elapsed * 4.8) * 20 : 0;
+      // 3) 3D 구즈넥 드립 포트 스파우트 (물 붓는 중일 때만 중앙에 진입, 대기 중에는 우측 밖으로 후퇴하여 명확히 구분!)
       ctx.save();
-      const spoutGrad = ctx.createLinearGradient(cx + 30, 65, cx + 120, 95);
-      spoutGrad.addColorStop(0, '#f8f9fa');
-      spoutGrad.addColorStop(0.5, '#adb5bd');
-      spoutGrad.addColorStop(1, '#495057');
-      ctx.strokeStyle = spoutGrad;
-      ctx.lineWidth = 11;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(W - 15, 74);
-      ctx.quadraticCurveTo(cx + 65, 96, cx + spoutSway, 86);
-      ctx.stroke();
-
       if (isPouring) {
-        const streamGrad = ctx.createLinearGradient(cx, 88, cx, 165);
-        streamGrad.addColorStop(0, 'rgba(165, 216, 255, 0.95)');
-        streamGrad.addColorStop(1, 'rgba(51, 154, 240, 0.75)');
-        ctx.strokeStyle = streamGrad;
-        ctx.lineWidth = 5;
+        const spoutSway = Math.sin(elapsed * 5.2) * 20;
+        const spoutGrad = ctx.createLinearGradient(cx + 30, 75, cx + 120, 105);
+        spoutGrad.addColorStop(0, '#f8f9fa');
+        spoutGrad.addColorStop(0.5, '#adb5bd');
+        spoutGrad.addColorStop(1, '#495057');
+        ctx.strokeStyle = spoutGrad;
+        ctx.lineWidth = 11;
+        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(cx + spoutSway, 89);
-        ctx.quadraticCurveTo(cx + spoutSway * 0.4, 125, cx + spoutSway * 0.5, 160);
+        ctx.moveTo(W - 10, 82);
+        ctx.quadraticCurveTo(cx + 60, 102, cx + spoutSway, 92);
+        ctx.stroke();
+
+        // 굵고 선명한 물줄기 + 물방울 스플래시
+        const streamGrad = ctx.createLinearGradient(cx, 92, cx, 165);
+        streamGrad.addColorStop(0, 'rgba(165, 216, 255, 0.98)');
+        streamGrad.addColorStop(1, 'rgba(51, 154, 240, 0.85)');
+        ctx.strokeStyle = streamGrad;
+        ctx.lineWidth = 5.5;
+        ctx.beginPath();
+        ctx.moveTo(cx + spoutSway, 94);
+        ctx.quadraticCurveTo(cx + spoutSway * 0.4, 128, cx + spoutSway * 0.5, 160);
+        ctx.stroke();
+      } else {
+        // 대기 중일 때는 주전자가 오른쪽 위로 살짝 물러나 멈춰 있는 모습 표시
+        ctx.strokeStyle = 'rgba(173, 181, 189, 0.45)';
+        ctx.lineWidth = 9;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(W + 10, 75);
+        ctx.quadraticCurveTo(W - 25, 85, W - 48, 78);
         ctx.stroke();
       }
       ctx.restore();
@@ -2476,7 +2706,6 @@
       const scaleH = 74;
       const scaleX = cx - scaleW / 2;
 
-      // 저울 상판 입체 베벨
       ctx.save();
       ctx.fillStyle = '#343a40';
       ctx.beginPath();
@@ -2487,12 +2716,11 @@
       ctx.closePath();
       ctx.fill();
 
-      // 저울 전면 3D 바디
       const scaleBodyGrad = ctx.createLinearGradient(0, scaleY, 0, scaleY + scaleH);
       scaleBodyGrad.addColorStop(0, '#212529');
       scaleBodyGrad.addColorStop(1, '#0b0d0e');
       ctx.fillStyle = scaleBodyGrad;
-      ctx.strokeStyle = '#495057';
+      ctx.strokeStyle = isPouring ? '#00a1e4' : (isWaiting ? '#f59f00' : '#495057');
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.roundRect(scaleX, scaleY, scaleW, scaleH, 14);
@@ -2519,16 +2747,16 @@
 
       // 저울 우측 LED 창: 실시간 물 무게(g)
       ctx.fillStyle = '#05070a';
-      ctx.strokeStyle = '#2b8a3e';
+      ctx.strokeStyle = isPouring ? '#00a1e4' : '#2b8a3e';
       ctx.beginPath();
       ctx.roundRect(scaleX + scaleW - 168, scaleY + 11, 154, 52, 8);
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = '#8ce99a';
+      ctx.fillStyle = isPouring ? '#66d9e8' : '#8ce99a';
       ctx.font = '800 10.5px sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(`WEIGHT (목표 ${Math.round(totalWater)}g)`, scaleX + scaleW - 24, scaleY + 26);
+      ctx.fillText(isPouring ? '💧 POURING...' : `WEIGHT (목표 ${Math.round(totalWater)}g)`, scaleX + scaleW - 24, scaleY + 26);
 
       ctx.fillStyle = '#ffd43b';
       ctx.font = '900 24px monospace';
@@ -2541,7 +2769,6 @@
       const srvTopW = 56;
       const srvBotW = 84;
 
-      // 서버 내부 커피 액체 (3D 원통형 타원 수면 포함)
       const fillRatio = Math.min(0.84, waterRatio * 0.84);
       const liquidH = (srvBotY - srvTopY) * fillRatio;
       const liquidTopY = srvBotY - liquidH;
@@ -2563,12 +2790,10 @@
         ctx.closePath();
         ctx.fill();
 
-        // 바닥 타원
         ctx.beginPath();
         ctx.ellipse(cx, srvBotY, srvBotW, 12, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 상단 커피 수면 크레마 타원
         ctx.fillStyle = '#b06d3b';
         ctx.beginPath();
         ctx.ellipse(cx, liquidTopY, liquidTopW, 10, 0, 0, Math.PI * 2);
@@ -2579,10 +2804,10 @@
       // 드리퍼 하단에서 서버로 떨어지는 커피 추출 줄기
       if (elapsed > 2 && timeRatio < 1.0) {
         ctx.save();
-        ctx.strokeStyle = '#9c5221';
-        ctx.lineWidth = 3.2;
-        ctx.setLineDash([7, 5]);
-        ctx.lineDashOffset = -elapsed * 55;
+        ctx.strokeStyle = '#b06d3b';
+        ctx.lineWidth = isPouring ? 3.5 : 2.2;
+        ctx.setLineDash(isPouring ? [9, 4] : [4, 9]);
+        ctx.lineDashOffset = -elapsed * (isPouring ? 65 : 35);
         const holes = currentDripper === 'kalita' ? [cx - 12, cx, cx + 12] : [cx];
         holes.forEach(hx => {
           ctx.beginPath();
@@ -2593,7 +2818,7 @@
         ctx.restore();
       }
 
-      // 유리 서버 외곽선 및 3D 하이라이트 반사광
+      // 유리 서버 외곽선
       ctx.save();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
       ctx.lineWidth = 2.5;
@@ -2608,7 +2833,6 @@
       ctx.ellipse(cx, srvBotY, srvBotW, 12, 0, 0, Math.PI);
       ctx.stroke();
 
-      // 유리 서버 손잡이
       ctx.beginPath();
       ctx.moveTo(cx + srvTopW + 2, srvTopY + 14);
       ctx.bezierCurveTo(cx + srvBotW + 34, srvTopY + 20, cx + srvBotW + 34, srvBotY - 20, cx + srvBotW - 2, srvBotY - 18);
@@ -2617,13 +2841,12 @@
       ctx.stroke();
       ctx.restore();
 
-      // 6) 3D 실사풍 드리퍼 & 부풀어 오르는 커피 베드(블루밍) & 맞춤형 명패 각인
-      const dTopY = 122;
+      // 6) 3D 실사풍 드리퍼 & 커피 베드(블루밍) & 맞춤형 명패 각인
+      const dTopY = 128;
       const dBotY = 238;
       const dTopW = 94;
       const dBotW = currentDripper === 'hario' ? 22 : 52;
 
-      // 드리퍼 몸체 3D 세라믹 음영
       ctx.save();
       const bodyGrad = ctx.createLinearGradient(cx - dTopW, dTopY, cx + dTopW, dTopY);
       bodyGrad.addColorStop(0, '#dee2e6');
@@ -2640,39 +2863,36 @@
       ctx.closePath();
       ctx.fill();
 
-      // 드리퍼 받침 링
       ctx.fillStyle = d.themeDark;
       ctx.beginPath();
       ctx.roundRect(cx - 72, dBotY - 2, 144, 9, 4);
       ctx.fill();
 
-      // 드리퍼 상단 3D 개구부 타원 및 내부 커피 빵(블루밍)
       ctx.fillStyle = '#3b2210';
       ctx.beginPath();
       ctx.ellipse(cx, dTopY, dTopW, 18, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      const bloomSwell = elapsed > 0 ? Math.sin(elapsed * 3) * 2.5 + (isPouring ? 4 : 1) : 0;
+      const bloomSwell = elapsed > 0 ? Math.sin(elapsed * 3) * 2.5 + (isPouring ? 4.5 : 1) : 0;
       const foamGrad = ctx.createRadialGradient(cx - 12, dTopY - 2, 5, cx, dTopY, dTopW * 0.85);
-      foamGrad.addColorStop(0, '#e6ccb2');
-      foamGrad.addColorStop(0.55, '#9c6644');
+      foamGrad.addColorStop(0, isPouring ? '#cfe8ff' : '#e6ccb2');
+      foamGrad.addColorStop(0.45, '#9c6644');
       foamGrad.addColorStop(1, '#582f0e');
       ctx.fillStyle = foamGrad;
       ctx.beginPath();
       ctx.ellipse(cx, dTopY + 2, dTopW * 0.84, 13 + bloomSwell, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // 드리퍼 상단 테두리 림
       ctx.strokeStyle = d.themeColor;
       ctx.lineWidth = 3.5;
       ctx.beginPath();
       ctx.ellipse(cx, dTopY, dTopW, 18, 0, 0, Math.PI * 2);
       ctx.stroke();
 
-      // 드리퍼 정면 3D 골드/블랙 명패 각인 (마스터: 오찬욱 바리스타 / 개별링크: 지인이름 바리스타)
+      // 드리퍼 정면 3D 명패 각인 (마스터: 오찬욱 바리스타 / 개별링크: 지인이름 바리스타)
       const plateW = 142;
       const plateH = 42;
-      const plateY = dTopY + 42;
+      const plateY = dTopY + 40;
 
       ctx.fillStyle = '#14171a';
       ctx.strokeStyle = '#ffd43b';
@@ -2693,15 +2913,15 @@
       ctx.fillText(d.fullName, cx, plateY + 35);
       ctx.restore();
 
-      // 7) 피어오르는 커피 아로마 김(Steam) 효과
-      if (elapsed > 5) {
+      // 7) 대기 구간(Waiting)에서 더욱 풍부하게 피어오르는 커피 아로마 김(Steam) 효과
+      if (elapsed > 3) {
         ctx.save();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-        ctx.lineWidth = 2.5;
-        [-28, 0, 28].forEach((ox, i) => {
-          const sy = dTopY - 12 - ((elapsed * 18 + i * 14) % 34);
+        ctx.strokeStyle = isWaiting ? 'rgba(255, 224, 102, 0.38)' : 'rgba(255, 255, 255, 0.22)';
+        ctx.lineWidth = isWaiting ? 3 : 2;
+        [-32, -10, 12, 34].forEach((ox, i) => {
+          const sy = dTopY - 8 - ((elapsed * 18 + i * 11) % 38);
           ctx.beginPath();
-          ctx.arc(cx + ox + Math.sin(elapsed * 2.5 + i) * 5, sy, 7, 0, Math.PI);
+          ctx.arc(cx + ox + Math.sin(elapsed * 2.5 + i) * 6, sy, 8, 0, Math.PI);
           ctx.stroke();
         });
         ctx.restore();
