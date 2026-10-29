@@ -268,7 +268,9 @@
     function copyGuestLink() {
       const n = prompt("초대할 지인의 이름을 입력하세요:");
       if(n) {
-        const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(n)}`; navigator.clipboard.writeText(link); alert(`초대 링크가 복사되었습니다!\n${link}`);
+        const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(n)}`;
+        navigator.clipboard.writeText(link);
+        alert(`초대 링크가 복사되었습니다!\n${link}`);
       }
     }
 
@@ -315,8 +317,11 @@
       const t = parseFloat(document.getElementById('time').value);
       const w = parseFloat(document.getElementById('water').value);
 
-      document.getElementById('l-dose').textContent = `${d} g`; document.getElementById('l-grind').textContent = `${g} μm`;
-      document.getElementById('l-temp').textContent = `${tmp.toFixed(1)} °C`; document.getElementById('l-time').textContent = `${Math.floor(t/60)}분 ${t\%60}초`; document.getElementById('l-water').textContent = `${w} g`;
+      document.getElementById('l-dose').textContent = `${d} g`;
+      document.getElementById('l-grind').textContent = `${g} μm`;
+      document.getElementById('l-temp').textContent = `${tmp.toFixed(1)} °C`;
+      document.getElementById('l-time').textContent = `${Math.floor(t/60)}분 ${t%60}초`;
+      document.getElementById('l-water').textContent = `${w} g`;
 
       let ey = 20.0 * Math.pow(780/g, 0.6) * (1+0.015*(tmp-92.5)) * (t/210) * Math.pow((w/d)/16, 0.35);
       ey = Math.max(12, Math.min(26, ey));
@@ -358,4 +363,220 @@
       if(!view.length) { grid.innerHTML = '<p style="color:#868e96">저장된 레시피가 없습니다.</p>'; return; }
       grid.innerHTML = view.map(x => `
         <div class="r-card">
-          <div class
+          <div class="r-head"><span>${x.name}</span><span style="color:var(--theme)">${x.author}</span></div>
+          <div style="font-size:12.5px; color:#495057; line-height:1.6">
+            ${x.d}g / ${x.w}g (${x.tmp}°C) <br> 분쇄 ${x.g}μm / ${x.t}초
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ================= 5. 3D 애니메이션 & 제미나이 보이스 =================
+    let brewReq=null, brewStart=0, elapsed=-10, isRunning=false;
+    let stages = [], curIdx = -1;
+    let actCtx = null;
+
+    function initAudio() {
+      if(!actCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        actCtx = new AudioContext();
+      }
+      if(actCtx.state === 'suspended') actCtx.resume();
+    }
+
+    function speak(txt) {
+      initAudio();
+      if(actCtx) {
+        const osc = actCtx.createOscillator(); const gain = actCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(659.25, actCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, actCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, actCtx.currentTime + 0.5);
+        osc.connect(gain); gain.connect(actCtx.destination); osc.start(); osc.stop(actCtx.currentTime+0.5);
+      }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'ko-KR'; u.rate = 1.05;
+      window.speechSynthesis.speak(u);
+    }
+
+    function openModal() {
+      document.getElementById('m-title').textContent = `${isMaster?'오찬욱':'오찬욱'} 바리스타 라이브 추출`;
+      document.getElementById('brewModal').classList.add('open');
+      buildStages();
+      resetBrew();
+    }
+    function closeModal() {
+      isRunning = false; cancelAnimationFrame(brewReq); window.speechSynthesis.cancel();
+      document.getElementById('brewModal').classList.remove('open');
+    }
+
+    function buildStages() {
+      const w = parseFloat(document.getElementById('water').value);
+      const d = parseFloat(document.getElementById('dose').value);
+      const t = parseFloat(document.getElementById('time').value);
+      
+      const w1 = Math.round(d * 2.1);
+      const w2 = Math.round(w * 0.45);
+      const w3 = Math.round(w * 0.75);
+      const w4 = w;
+
+      const t1 = 0, t2 = 40, t3 = Math.round(t*0.45), t4 = Math.round(t*0.7);
+
+      stages = [
+        { s:-10, pE:0, e:0, stW:0, tgW:0, name:"추출 준비", vStart:`${userName} 바리스타님, 추출을 준비해 주세요. 저울의 영점을 확인하고 주전자를 들어주세요. 10초 후에 추출을 시작합니다.` },
+        { s:t1, pE:t2-5, e:t2, stW:0, tgW:w1, name:"뜸들이기", vStart:`뜸들이기입니다. 원두 전체가 고르게 젖도록 중심부터 물 ${w1}그램을 ${t2-5}초 안에 천천히 부으세요.`, vMid:`물 붓는 것을 멈추고, 원두가 부풀어 오르며 가스가 빠지는 모습을 보며 1차 추출 시작 전까지 기다리세요.` },
+        { s:t2, pE:t3-5, e:t3, stW:w1, tgW:w2, name:"1차 추출", vStart:`1차 추출입니다. 화사한 향미를 끌어내기 위해 나선형을 그리며 부으세요. 저울 기준 누적 ${w2}그램까지 채우시면 됩니다.`, vMid:`1차 추출 물 붓는 것을 멈추고, 커피 수위가 자연스럽게 내려가도록 2차 추출 시작 전까지 기다리세요.` },
+        { s:t3, pE:t4-5, e:t4, stW:w2, tgW:w3, name:"2차 추출", vStart:`2차 추출입니다. 깊은 단맛을 채우기 위해 부드럽게 부으세요. 저울 기준 누적 ${w3}그램까지 채우시면 됩니다.`, vMid:`2차 추출 물 붓는 것을 멈추고, 마지막 추출 시작 전까지 잠시 숨을 고르며 기다리세요.` },
+        { s:t4, pE:t-10, e:t, stW:w3, tgW:w4, name:"3차(마지막) 추출", vStart:`마지막 추출입니다. 맛의 균형을 완성하기 위해 최종 ${w4}그램을 맞춰주세요.`, vMid:`주전자를 내려놓으세요. 드리퍼를 치울 때까지 추출되는 모습과 피어오르는 커피 향을 여유롭게 느껴보세요.` }
+      ];
+
+      const lst = document.getElementById('s-list');
+      lst.innerHTML = stages.slice(1).map((x,i)=>`<div class="s-item" id="si-${i+1}"><div>${x.s}초</div><div>${x.name}</div><div style="text-align:right;font-weight:800;">목표 ${x.tgW}g</div></div>`).join('');
+    }
+
+    function resetBrew() {
+      isRunning = false; elapsed = -10; curIdx = -1;
+      cancelAnimationFrame(brewReq);
+      document.getElementById('l-time-txt').textContent = "-00:10";
+      document.getElementById('l-water-txt').textContent = "0 g";
+      document.getElementById('btn-toggle').textContent = "▶ 추출 시작";
+      document.getElementById('s-title').textContent = "준비 완료";
+      document.getElementById('s-desc').textContent = "[추출 시작] 버튼을 누르면 10초 카운트다운 후 시작됩니다.";
+      draw3D(0, false, 0);
+    }
+
+    function toggleBrew() {
+      initAudio();
+      if(elapsed >= parseFloat(document.getElementById('time').value)) resetBrew();
+      isRunning = !isRunning;
+      const btn = document.getElementById('btn-toggle');
+      if(isRunning) { btn.textContent = "⏸ 일시정지"; brewStart = performance.now() - (elapsed*1000); loop(performance.now()); }
+      else btn.textContent = "▶ 이어서 추출";
+    }
+
+    function loop(now) {
+      if(!isRunning) return;
+      elapsed = (now - brewStart)/1000;
+      const totalT = parseFloat(document.getElementById('time').value);
+      
+      let sec = Math.floor(elapsed);
+      if(elapsed < 0) document.getElementById('l-time-txt').textContent = `-00:${Math.abs(sec)<10?'0'+Math.abs(sec):Math.abs(sec)}`;
+      else document.getElementById('l-time-txt').textContent = `${Math.floor(sec/60)<10?'0'+Math.floor(sec/60):Math.floor(sec/60)}:${sec%60<10?'0'+sec%60:sec%60}`;
+
+      // 10초 카운트다운 비프음
+      if(elapsed >= -3.5 && elapsed < 0 && curIdx === 0) {
+        if(Math.floor(elapsed) !== Math.floor(elapsed-0.016)) {
+           initAudio(); if(actCtx){ const o=actCtx.createOscillator(); o.frequency.value=880; o.connect(actCtx.destination); o.start(); o.stop(actCtx.currentTime+0.1); }
+        }
+      }
+
+      let activeI = -1;
+      for(let i=0; i<stages.length; i++) if(elapsed >= stages[i].s) activeI = i;
+
+      if(activeI !== curIdx && elapsed < totalT) {
+        curIdx = activeI;
+        speak(stages[curIdx].vStart);
+        document.getElementById('s-title').textContent = stages[curIdx].name + " [물 붓기 시작]";
+        document.getElementById('s-desc').textContent = `누적 ${stages[curIdx].tgW}g 까지 부어주세요.`;
+      }
+      
+      // 중간 멈춤 멘트
+      if(curIdx > 0 && elapsed > stages[curIdx].pE && elapsed < stages[curIdx].pE + 0.1 && stages[curIdx].vMid) {
+        speak(stages[curIdx].vMid);
+        document.getElementById('s-title').textContent = stages[curIdx].name + " [대기 / 멈춤]";
+        document.getElementById('s-desc').textContent = "물을 멈추고 커피가 빠지길 기다리세요.";
+      }
+
+      for(let i=1;i<stages.length;i++) document.getElementById('si-'+i).className = (i===curIdx) ? 's-item active' : 's-item';
+
+      let isP = false; let w = 0;
+      if(curIdx >= 0) {
+        isP = (elapsed <= stages[curIdx].pE && elapsed >= 0);
+        if(elapsed < 0) w = 0;
+        else if(elapsed >= stages[curIdx].pE) w = stages[curIdx].tgW;
+        else w = stages[curIdx].stW + (stages[curIdx].tgW - stages[curIdx].stW) * ((elapsed - stages[curIdx].s)/(stages[curIdx].pE - stages[curIdx].s));
+      }
+      document.getElementById('l-water-txt').textContent = Math.round(w) + " g";
+
+      if(elapsed >= totalT) {
+        isRunning = false; document.getElementById('btn-toggle').textContent = "↺ 다시 추출";
+        document.getElementById('s-title').textContent = "🎉 추출 완료!";
+        document.getElementById('s-desc').textContent = "드리퍼를 치우고 커피를 즐겨보세요.";
+        speak(`추출이 모두 끝났습니다. 이제 드리퍼를 치워주세요. ${userName}님을 위해 정성껏 내린 커피가 완성되었습니다. 서버를 가볍게 흔들어 따뜻할 때 즐겨보세요. 오늘 내린 커피가 맛있다면 잊지 말고 나만의 인생 레시피로 저장해 보세요!`);
+      }
+
+      draw3D(Math.max(0,elapsed), isP, w / parseFloat(document.getElementById('water').value));
+      if(isRunning) brewReq = requestAnimationFrame(loop);
+    }
+
+    // 3D 렌더링
+    function draw3D(time, isP, wRatio) {
+      const c = document.getElementById('animCanvas'); const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      const cx = c.width/2;
+
+      // 주전자 스파우트
+      ctx.strokeStyle = '#dee2e6'; ctx.lineWidth = 10; ctx.lineCap = 'round';
+      const spX = isP ? Math.sin(time*5)*10 : 0;
+      ctx.beginPath(); ctx.moveTo(cx+90, -20); ctx.quadraticCurveTo(cx+40, 40, cx+spX, 35); ctx.stroke();
+      if(isP) {
+        ctx.strokeStyle = 'rgba(51, 154, 240, 0.8)'; ctx.lineWidth = 5; ctx.setLineDash([10,8]); ctx.lineDashOffset = -time*80;
+        ctx.beginPath(); ctx.moveTo(cx+spX, 38); ctx.lineTo(cx+spX*0.5, 130); ctx.stroke(); ctx.setLineDash([]);
+      }
+
+      // 서버(유리)
+      const sT=240, sB=410, sW=85;
+      const fH = (sB-sT) * Math.min(0.8, wRatio);
+      if(fH>5) {
+        const grd = ctx.createLinearGradient(0, sB-fH, 0, sB); grd.addColorStop(0,'#7f4f24'); grd.addColorStop(1,'#432818');
+        ctx.fillStyle = grd;
+        ctx.beginPath(); ctx.ellipse(cx, sB, sW, 15, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillRect(cx-sW, sB-fH, sW*2, fH);
+        ctx.fillStyle='rgba(221,184,146,0.5)'; ctx.beginPath(); ctx.ellipse(cx, sB-fH, sW, 15, 0, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.strokeStyle='rgba(255,255,255,0.4)'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(cx-60, sT); ctx.lineTo(cx-sW, sB); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+60, sT); ctx.lineTo(cx+sW, sB); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(cx, sB, sW, 15, 0, 0, Math.PI*2); ctx.stroke();
+
+      // 김 효과
+      if(time>10) {
+        ctx.fillStyle='rgba(255,255,255,0.15)';
+        for(let i=0;i<3;i++) {
+          ctx.beginPath(); ctx.arc(cx-20+i*20+Math.sin(time*2+i)*10, 80-((time*20+i*30)%50), 8, 0, Math.PI*2); ctx.fill();
+        }
+      }
+
+      // 드리퍼
+      const topY=80, botY=220, topW=100, botW= curDrip==='hario'?20:45;
+      const dGrad = ctx.createLinearGradient(cx-topW, 0, cx+topW, 0);
+      dGrad.addColorStop(0, '#f1f3f5'); dGrad.addColorStop(0.5, '#fff'); dGrad.addColorStop(1, '#dee2e6');
+      
+      // 커피 베드 블루밍(3D 빵)
+      const bedY = botY - 80;
+      ctx.fillStyle = '#5c3a21'; ctx.beginPath(); ctx.ellipse(cx, botY, botW, 8, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx-botW, botY); ctx.lineTo(cx-65, bedY); ctx.lineTo(cx+65, bedY); ctx.lineTo(cx+botW, botY); ctx.fill();
+      ctx.fillStyle = '#8b5a2b';
+      const bloom = isP ? Math.sin(time*2)*4 : 0;
+      ctx.beginPath(); ctx.ellipse(cx, bedY, 65, 18+bloom, 0, 0, Math.PI*2); ctx.fill();
+
+      // 드리퍼 외관 투명 세라믹 덮기
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.beginPath(); ctx.moveTo(cx-botW, botY); ctx.lineTo(cx-topW, topY); ctx.lineTo(cx+topW, topY); ctx.lineTo(cx+botW, botY); ctx.fill();
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--theme'); ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.ellipse(cx, topY, topW, 20, 0, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(cx, botY, botW, 8, 0, Math.PI, Math.PI*2); ctx.stroke();
+
+      // 명패 각인
+      ctx.fillStyle = '#212529'; ctx.beginPath(); ctx.roundRect(cx-70, topY+45, 140, 36, 6); ctx.fill();
+      ctx.fillStyle = '#f1c40f'; ctx.font = '900 15px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(`${userName} 바리스타`, cx, topY+68);
+
+      // 떨어지는 물방울
+      if(time>3 && wRatio<1.0) {
+        ctx.fillStyle = '#5c3a21';
+        ctx.beginPath(); ctx.arc(cx, botY+10+((time*150)%120), 3, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  </script>
+</body>
+</html>
