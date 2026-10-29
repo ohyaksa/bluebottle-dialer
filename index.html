@@ -3,970 +3,206 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>오찬욱 바리스타 브루잉 다이얼러 & 라이브 추출 가이드</title>
+  <title>오찬욱 바리스타 브루잉 다이얼러</title>
   <style>
-    :root {
-      --theme-color: #00a1e4;
-      --theme-dark: #0077ac;
-      --theme-soft: #e7f5ff;
-      --bg-color: #f8f9fa;
-      --card-bg: #ffffff;
-      --text-main: #212529;
-      --text-sub: #6c757d;
-      --sour-color: #f59f00;
-      --sweet-color: #37b24d;
-      --bitter-color: #7950f2;
-      --border-color: #e9ecef;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding: 20px;
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 18px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .title-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-badge {
-      width: 44px;
-      height: 44px;
-      background-color: var(--theme-color);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 800;
-      font-size: 20px;
-      transition: background-color 0.25s;
-    }
-
-    h1 {
-      font-size: 21px;
-      font-weight: 800;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    .start-brew-btn {
-      background: linear-gradient(135deg, var(--theme-color), var(--theme-dark));
-      color: #fff;
-      border: none;
-      padding: 12px 22px;
-      border-radius: 28px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 119, 172, 0.3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .start-brew-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0, 119, 172, 0.4);
-    }
-
-    .start-brew-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Dripper Selector Cards */
-    .dripper-selector {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .dripper-card {
-      background: var(--card-bg);
-      border: 2px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .dripper-card:hover {
-      border-color: var(--theme-color);
-    }
-
-    .dripper-card.active {
-      border-color: var(--theme-color);
-      background: var(--theme-soft);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .dripper-card-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .dripper-tag {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.06);
-      font-weight: 700;
-    }
-
-    .dripper-desc {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    /* Presets */
-    .preset-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .preset-btn {
-      padding: 7px 13px;
-      font-size: 12.5px;
-      font-weight: 600;
-      border: 1px solid var(--border-color);
-      background: var(--card-bg);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-main);
-    }
-
-    .preset-btn:hover {
-      border-color: var(--theme-color);
-      color: var(--theme-dark);
-    }
-
-    .preset-btn.active {
-      background: var(--theme-color);
-      color: #fff;
-      border-color: var(--theme-color);
-    }
-
-    /* KPI Cards */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .kpi-card {
-      background: var(--card-bg);
-      padding: 15px 18px;
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    }
-
-    .kpi-label {
-      font-size: 12px;
-      color: var(--text-sub);
-      font-weight: 600;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .kpi-value {
-      font-size: 25px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .kpi-sub {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-top: 4px;
-    }
-
-    .badge {
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .badge-good { background: #d3f9d8; color: #2b8a3e; }
-    .badge-warn { background: #fff3bf; color: #e67700; }
-    .badge-bad  { background: #ffe3e3; color: #c92a2a; }
-
-    /* Main Grid */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 20px;
-    }
-
-    .panel {
-      background: var(--card-bg);
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    }
-
-    .panel-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Sliders */
-    .control-item {
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px dashed var(--border-color);
-    }
-
-    .control-item:last-of-type {
-      margin-bottom: 14px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .control-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-
-    .control-name {
-      font-size: 13.5px;
-      font-weight: 700;
-    }
-
-    .control-val {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: var(--theme-dark);
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--theme-color);
-      height: 6px;
-      cursor: pointer;
-    }
-
-    .control-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-sub);
-      margin-top: 4px;
-    }
-
-    .ratio-sync-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      gap: 6px;
-    }
-
-    .mini-btn {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      background: #f1f3f5;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .mini-btn:hover {
-      background: var(--theme-soft);
-      border-color: var(--theme-color);
-    }
-
-    /* Balance Gauge & Bars */
-    .balance-meter-wrap {
-      margin-bottom: 20px;
-      padding: 14px;
-      background: #f8f9fa;
-      border-radius: 10px;
-    }
-
-    .meter-track {
-      position: relative;
-      height: 14px;
-      border-radius: 7px;
-      background: linear-gradient(90deg, #f59f00 0%, #37b24d 50%, #7950f2 100%);
-      margin: 10px 0 6px 0;
-    }
-
-    .meter-sweet-zone {
-      position: absolute;
-      left: 38%;
-      width: 24%;
-      top: -3px;
-      bottom: -3px;
-      border: 2px dashed rgba(255,255,255,0.9);
-      border-radius: 4px;
-      pointer-events: none;
-    }
-
-    .meter-pointer {
-      position: absolute;
-      top: -5px;
-      width: 16px;
-      height: 24px;
-      background: #212529;
-      border: 3px solid #fff;
-      border-radius: 8px;
-      transform: translateX(-50%);
-      transition: left 0.2s ease-out;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .flavor-bars {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .flavor-box {
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-
-    .flavor-box-head {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .bar-bg {
-      height: 8px;
-      background: #e9ecef;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      transition: width 0.2s ease-out;
-    }
-
-    /* Charts Grid */
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 16px;
-    }
-
-    canvas.chart-canvas {
-      width: 100%;
-      height: 265px;
-      background: #ffffff;
-      border-radius: 8px;
-    }
-
-    .diagnosis-box {
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: var(--theme-soft);
-      border-left: 4px solid var(--theme-color);
-      font-size: 13.5px;
-      transition: all 0.25s;
-    }
-
-    .diagnosis-title {
-      font-weight: 700;
-      color: var(--theme-dark);
-      margin-bottom: 4px;
-    }
-
-    /* ================= 브루잉 라이브 애니메이션 모달 ================= */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.78);
-      backdrop-filter: blur(5px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 16px;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .brew-modal {
-      background: #ffffff;
-      width: 100%;
-      max-width: 920px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-      max-height: 94vh;
-    }
-
-    .modal-header {
-      background: linear-gradient(135deg, var(--theme-color), var(--theme-dark));
-      color: #fff;
-      padding: 16px 22px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-header h2 {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .close-modal-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .modal-body {
-      padding: 20px;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .anim-stage-box {
-      background: #f8f9fa;
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #brewAnimCanvas {
-      width: 330px;
-      height: 390px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
-    }
-
-    .brew-info-box {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .timer-display-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .big-stat-card {
-      background: #f8f9fa;
-      border: 2px solid var(--border-color);
-      border-radius: 14px;
-      padding: 14px 16px;
-      text-align: center;
-    }
-
-    .big-stat-label {
-      font-size: 12px;
-      color: var(--text-sub);
-      font-weight: 700;
-    }
-
-    .big-stat-num {
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--text-main);
-      font-variant-numeric: tabular-nums;
-      margin-top: 2px;
-    }
-
-    .big-stat-sub {
-      font-size: 12px;
-      color: var(--theme-dark);
-      font-weight: 700;
-    }
-
-    .stage-alert-banner {
-      background: var(--theme-soft);
-      border: 2px solid var(--theme-color);
-      border-radius: 12px;
-      padding: 14px 16px;
-      transition: all 0.25s;
-    }
-
-    .stage-alert-banner.flash {
-      animation: pulseAlert 0.8s ease-in-out 3;
-    }
-
-    @keyframes pulseAlert {
-      0%, 100% { transform: scale(1); background: var(--theme-soft); }
-      50% { transform: scale(1.02); background: #fff3bf; border-color: #f59f00; }
-    }
-
-    .stage-banner-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--theme-dark);
-      margin-bottom: 4px;
-    }
-
-    .stage-banner-desc {
-      font-size: 13.5px;
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .schedule-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .schedule-item {
-      display: grid;
-      grid-template-columns: 95px 1fr 110px;
-      align-items: center;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      background: #fff;
-      font-size: 13px;
-      transition: all 0.2s;
-    }
-
-    .schedule-item.active {
-      border: 2px solid var(--theme-color);
-      background: var(--theme-soft);
-      font-weight: 800;
-      transform: translateX(4px);
-    }
-
-    .schedule-item.done {
-      opacity: 0.55;
-      background: #f1f3f5;
-    }
-
-    .sched-time {
-      font-weight: 800;
-      color: var(--theme-dark);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .sched-water {
-      text-align: right;
-      font-weight: 800;
-    }
-
-    .modal-controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-
-    .ctrl-btn {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .ctrl-btn-primary {
-      background: var(--theme-color);
-      color: #fff;
-    }
-
-    .ctrl-btn-secondary {
-      background: #e9ecef;
-      color: #212529;
-    }
-
-    @media (max-width: 960px) {
-      .dripper-selector { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-      .main-grid { grid-template-columns: 1fr; }
-      .charts-grid { grid-template-columns: 1fr; }
-      .modal-body { grid-template-columns: 1fr; }
-    }
+    :root{--c-bb:#00a1e4;--c-bb-d:#0077ac;--c-hr:#e03131;--c-hr-d:#c92a2a;--c-kl:#d9480f;--c-kl-d:#b43c0c;--theme:#00a1e4;--theme-d:#0077ac;--theme-s:#e7f5ff;--bg:#f8f9fa;--card:#fff;--txt:#212529;--txt-s:#6c757d;--bd:#e9ecef}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Pretendard",sans-serif}
+    body{background:var(--bg);color:var(--txt);padding:20px;line-height:1.5}
+    .container{max-width:1200px;margin:0 auto;display:none}
+    header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:2px solid var(--bd)}
+    .title-group{display:flex;align-items:center;gap:12px}
+    .logo-badge{width:44px;height:44px;background:var(--theme);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;transition:0.25s}
+    h1{font-size:21px;font-weight:800} .subtitle{font-size:13px;color:var(--txt-s)}
+    .user-badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;margin-left:8px}
+    .badge-master{background:#343a40;color:#f1c40f;border:1px solid #f1c40f} .badge-guest{background:#e9ecef;color:#495057}
+    .start-brew-btn{background:linear-gradient(135deg,var(--theme),var(--theme-d));color:#fff;border:none;padding:12px 22px;border-radius:28px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.15);display:flex;gap:8px;transition:0.15s;width:100%;justify-content:center}
+    .start-brew-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.2)}
+    .dripper-sel{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+    .d-card{background:var(--card);border:2px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;transition:0.2s}
+    .d-card:hover{border-color:var(--theme)} .d-card.active{border-color:var(--theme);background:var(--theme-s)}
+    .d-head{display:flex;justify-content:space-between;font-weight:800;font-size:15px;margin-bottom:4px}
+    .d-desc{font-size:12px;color:var(--txt-s)}
+    .recipe-bar{display:flex;gap:10px;margin-bottom:20px;background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--bd);align-items:center;flex-wrap:wrap}
+    select{padding:8px 12px;border-radius:8px;border:1px solid var(--bd);font-weight:700;font-size:14px;outline:none}
+    .dose-btns{display:flex;gap:6px} .d-btn{padding:6px 12px;border:1px solid var(--bd);border-radius:8px;background:#f8f9fa;cursor:pointer;font-weight:700;font-size:13px}
+    .d-btn.active{background:var(--theme);color:#fff;border-color:var(--theme)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .kpi-card{background:var(--card);padding:15px;border-radius:12px;border:1px solid var(--bd)}
+    .kpi-lbl{font-size:12px;color:var(--txt-s);font-weight:700;margin-bottom:6px}
+    .kpi-val{font-size:24px;font-weight:800;color:var(--txt)}
+    .main-grid{display:grid;grid-template-columns:360px 1fr;gap:20px;margin-bottom:30px}
+    .panel{background:var(--card);border-radius:14px;border:1px solid var(--bd);padding:20px}
+    .p-title{font-size:15px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between}
+    .ctrl-item{margin-bottom:16px;border-bottom:1px dashed var(--bd);padding-bottom:12px} .ctrl-item:last-child{border:0;padding:0;margin:0}
+    .ctrl-head{display:flex;justify-content:space-between;font-weight:800;font-size:13.5px;margin-bottom:8px}
+    .ctrl-val{color:var(--theme-d)} input[type="range"]{width:100%;accent-color:var(--theme)}
+    .charts-grid{display:grid;grid-template-columns:1fr;gap:16px} canvas.chart{width:100%;height:240px;background:#fff;border-radius:8px}
+    .r-board{background:#fff;border:2px solid var(--theme);border-radius:14px;padding:20px}
+    .r-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:14px}
+    .r-card{padding:14px;border:1px solid var(--bd);border-radius:10px;background:#f8f9fa}
+    .r-head{display:flex;justify-content:space-between;font-weight:800;margin-bottom:8px}
+    .auth-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.9);display:flex;align-items:center;justify-content:center;z-index:10000}
+    .auth-box{background:#fff;padding:30px;border-radius:20px;text-align:center;width:100%;max-width:380px}
+    .auth-box h2{margin-bottom:8px;font-weight:900} .auth-box p{color:var(--txt-s);font-size:13.5px;margin-bottom:24px}
+    .a-btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:800;font-size:15px;margin-bottom:10px;cursor:pointer}
+    .a-guest{background:#f1f3f5;color:#212529} .a-master{background:#212529;color:#f1c40f}
+    .a-input{width:100%;padding:12px;border:2px solid var(--bd);border-radius:8px;margin-bottom:10px;font-size:16px;text-align:center;display:none}
+    /* Modal 3D Animation */
+    .m-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+    .m-overlay.open{display:flex}
+    .m-box{background:#fff;width:100%;max-width:960px;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;max-height:95vh}
+    .m-head{background:linear-gradient(135deg,var(--theme),var(--theme-d));padding:16px 24px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+    .m-body{display:grid;grid-template-columns:400px 1fr;gap:24px;padding:24px;overflow-y:auto}
+    .anim-box{background:#111;border-radius:16px;padding:10px;position:relative}
+    canvas#animCanvas{width:100%;height:440px;border-radius:12px;background:radial-gradient(circle at 50% 50%, #343a40, #111)}
+    .info-box{display:flex;flex-direction:column;gap:16px}
+    .b-stat{display:flex;gap:12px} .b-card{flex:1;background:#f8f9fa;border:2px solid var(--bd);border-radius:14px;padding:16px;text-align:center}
+    .b-num{font-size:36px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--theme-d)}
+    .alert-banner{background:var(--theme-s);border:2px solid var(--theme);border-radius:12px;padding:16px}
+    .s-list{display:flex;flex-direction:column;gap:8px}
+    .s-item{display:grid;grid-template-columns:90px 1fr 100px;padding:12px;background:#fff;border:1px solid var(--bd);border-radius:10px;font-size:13px;align-items:center}
+    .s-item.active{border:2px solid var(--theme);background:var(--theme-s);font-weight:800;transform:translateX(4px)}
+    .c-btns{display:flex;gap:10px;margin-top:10px} .c-btn{flex:1;padding:14px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
+    @media (max-width:960px){.m-body,.main-grid,.dripper-sel{grid-template-columns:1fr} .kpi-grid{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <!-- 인증 모달 -->
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-box">
+      <h2>오찬욱 바리스타 다이얼러</h2>
+      <p>커피 추출 최적화 & 3D 라이브 가이드</p>
+      <button class="a-btn a-guest" id="btn-guest-enter" onclick="showGuestInput()">☕ 개별 링크 입장 (지인용)</button>
+      <input type="text" id="guest-name" class="a-input" placeholder="이름을 입력하세요">
+      <button class="a-btn a-guest" id="btn-submit-guest" style="display:none;" onclick="login('guest')">입장하기</button>
+      
+      <button class="a-btn a-master" id="btn-show-master" onclick="showMasterInput()" style="margin-top:12px;">👑 마스터 권한 입장</button>
+      <input type="password" id="master-code" class="a-input" placeholder="입장 코드 4자리" maxlength="4">
+      <button class="a-btn a-master" id="btn-submit-master" style="display:none;" onclick="login('master')">확인</button>
+    </div>
+  </div>
+
+  <!-- 메인 컨테이너 -->
+  <div class="container" id="mainContainer">
     <header>
       <div class="title-group">
         <div class="logo-badge" id="logo-badge">B</div>
         <div>
-          <h1 id="main-title">오찬욱 바리스타 브루잉 다이얼링 & 라이브 추출 가이드</h1>
-          <div class="subtitle" id="main-subtitle">원두 10g~50g · 블루보틀 / 하리오 V60 / 칼리타 웨이브 실시간 수율(EY) & 푸어링 음성 알람 시뮬레이터</div>
+          <h1>브루잉 3D 다이얼링 가이드 <span id="role-badge" class="user-badge badge-guest">게스트</span></h1>
+          <div class="subtitle" id="welcome-msg">환영합니다!</div>
         </div>
       </div>
-      <button class="start-brew-btn" onclick="openBrewModal()">
-        <span>▶ 실시간 추출 시작 (타이머 & 알림)</span>
-      </button>
+      <button id="copy-link-btn" style="display:none; padding:8px 16px; border-radius:20px; border:2px solid var(--theme); background:#fff; color:var(--theme); font-weight:800; cursor:pointer;" onclick="copyGuestLink()">🔗 초대 링크 만들기</button>
     </header>
 
-    <!-- 1. 드리퍼 용기 선택 -->
-    <div class="dripper-selector">
-      <div class="dripper-card active" id="card-bluebottle" onclick="selectDripper('bluebottle')">
-        <div class="dripper-card-head">
-          <span>🔵 블루보틀 드리퍼 (Blue Bottle)</span>
-          <span class="dripper-tag">플랫베드 · 단일 추출구</span>
-        </div>
-        <div class="dripper-desc">40개 수직 모세관 리브와 1개의 추출구. 균일한 수율과 풍부한 단맛·바디감을 내며 가는 분쇄도에서는 병목에 유의해야 합니다.</div>
+    <!-- 드리퍼 선택 -->
+    <div class="dripper-sel">
+      <div class="d-card active" id="card-bluebottle" onclick="selDripper('bluebottle')">
+        <div class="d-head"><span>🔵 블루보틀</span></div><div class="d-desc">플랫베드 · 균일한 단맛</div>
       </div>
-
-      <div class="dripper-card" id="card-hario" onclick="selectDripper('hario')">
-        <div class="dripper-card-head">
-          <span>🔺 하리오 V60 (Hario V60)</span>
-          <span class="dripper-tag">원추형 · 대구경 추출구</span>
-        </div>
-        <div class="dripper-desc">60도 각도의 나선형 리브와 큰 구멍으로 유속이 빠릅니다. 화사한 산미와 깔끔한 클린컵 표현에 유리합니다.</div>
+      <div class="d-card" id="card-hario" onclick="selDripper('hario')">
+        <div class="d-head"><span>🔺 하리오 V60</span></div><div class="d-desc">원추형 · 화사한 산미</div>
       </div>
-
-      <div class="dripper-card" id="card-kalita" onclick="selectDripper('kalita')">
-        <div class="dripper-card-head">
-          <span>🌊 칼리타 웨이브 (Kalita Wave)</span>
-          <span class="dripper-tag">플랫베드 · 3공 추출구</span>
-        </div>
-        <div class="dripper-desc">웨이브 필터와 3개의 작은 구멍이 유속을 일정하게 제어합니다. 반침출 효과로 단맛과 밸런스 재현성이 뛰어납니다.</div>
+      <div class="d-card" id="card-kalita" onclick="selDripper('kalita')">
+        <div class="d-head"><span>🌊 칼리타 웨이브</span></div><div class="d-desc">3공 · 안정적 밸런스</div>
       </div>
     </div>
 
-    <!-- 빠른 프리셋 버튼 -->
-    <div class="preset-group">
-      <button class="preset-btn active" onclick="applyPreset('standard', this)">현재 드리퍼 표준 스윗 스팟 (30g)</button>
-      <button class="preset-btn" onclick="applyPreset('single15', this)">1인분 표준 추출 (15g / 240g)</button>
-      <button class="preset-btn" onclick="applyPreset('batch45', this)">대용량 배치 추출 (45g / 720g)</button>
-      <button class="preset-btn" onclick="applyPreset('light', this)">약배전 싱글오리진 (화사한 산미)</button>
-      <button class="preset-btn" onclick="applyPreset('bold', this)">강배전·블렌드 (묵직한 단맛)</button>
-      <button class="preset-btn" onclick="applyPreset('under', this)">과소 추출 예시</button>
-      <button class="preset-btn" onclick="applyPreset('over', this)">과다 추출 예시</button>
-    </div>
-
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>추출 수율 (Extraction Yield)</span>
-          <span id="ey-badge" class="badge badge-good">이상적 수율</span>
-        </div>
-        <div class="kpi-value" id="ey-val">20.0%</div>
-        <div class="kpi-sub">SCA 권장 스윗 스팟: 18.0% – 22.0%</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>커피 농도 (TDS) 및 추출량</span>
-          <span id="tds-badge" class="badge badge-good">골든컵 농도</span>
-        </div>
-        <div class="kpi-value" id="tds-val">1.43%</div>
-        <div class="kpi-sub" id="ratio-sub">원두 30g · 비율 1:16.0 · 추출액 420g</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>드리퍼 내부 물 빠짐 상태</span>
-          <span id="flow-badge" class="badge badge-good">유속 안정</span>
-        </div>
-        <div class="kpi-value" id="flow-val">적정 저항</div>
-        <div class="kpi-sub" id="flow-sub">평균 유속 2.29 g/s · 자연 배수 210초</div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-label">
-          <span>신맛 · 단맛 · 쓴맛 향미 판정</span>
-          <span id="flavor-badge" class="badge badge-good">밸런스</span>
-        </div>
-        <div class="kpi-value" id="flavor-val" style="font-size: 20px;">이상적인 스윗 스팟</div>
-        <div class="kpi-sub" id="flavor-sub">단맛이 산미와 쓴맛을 입체적으로 연결</div>
+    <!-- 산지 레시피 DB 선택기 -->
+    <div class="recipe-bar">
+      <span style="font-weight:800; font-size:14px;">📖 산지 레시피:</span>
+      <select id="origin-sel" onchange="applyMatrix()">
+        <option value="geisha">🌸 파나마 게이샤 (약배전)</option>
+        <option value="yirgacheffe" selected>🌸 에티오피아 예가체프 (약배전)</option>
+        <option value="kenya">🌸 케냐 AA (약배전)</option>
+        <option value="colombia">🍯 콜롬비아 수프리모 (중배전)</option>
+        <option value="thailand">🍯 태국 치앙마이 (중배전)</option>
+        <option value="guatemala">🍯 과테말라 안티구아 (중배전)</option>
+        <option value="mandheling">🍫 인도네시아 만델링 (강배전)</option>
+        <option value="darkblend">🍫 다크 시그니처 블렌드 (강배전)</option>
+      </select>
+      <span style="font-weight:800; font-size:14px; margin-left:10px;">중량:</span>
+      <div class="dose-btns">
+        <button class="d-btn" id="btn-d0" onclick="setDoseIdx(0)">15g</button>
+        <button class="d-btn" id="btn-d1" onclick="setDoseIdx(1)">20g</button>
+        <button class="d-btn" id="btn-d2" onclick="setDoseIdx(2)">25g</button>
+        <button class="d-btn active" id="btn-d3" onclick="setDoseIdx(3)">30g</button>
+        <button class="d-btn" id="btn-d4" onclick="setDoseIdx(4)">40g</button>
       </div>
     </div>
 
+    <!-- 변수 패널 -->
     <div class="main-grid">
-      <!-- Left: 5 Sliders -->
       <div class="panel">
-        <div class="panel-title">
-          <span>다이얼링 변수 조작</span>
-          <span style="font-size:12px; color:var(--theme-dark);" id="dripper-indicator">블루보틀 드리퍼 선택됨</span>
+        <div class="p-title">다이얼링 미세 조작</div>
+        <div class="ctrl-item">
+          <div class="ctrl-head"><span>원두 중량</span><span class="ctrl-val" id="l-dose">30 g</span></div>
+          <input type="range" id="dose" min="15" max="40" step="1" value="30" oninput="upd()">
         </div>
-
-        <!-- 1. 원두 양 (10~50g) -->
-        <div class="control-item">
-          <div class="control-header">
-            <span class="control-name">1. 원두 도징량 (Coffee Dose)</span>
-            <span class="control-val" id="dose-label">30 g (2~3인분)</span>
-          </div>
-          <input type="range" id="dose" min="10" max="50" step="1" value="30" oninput="onDoseChange()" />
-          <div class="control-labels">
-            <span>10g (소량 1인분)</span>
-            <span>30g (중량)</span>
-            <span>50g (대용량 배치)</span>
-          </div>
-          <div class="ratio-sync-row">
-            <label style="font-size:11.5px; color:#495057; display:flex; align-items:center; gap:5px; cursor:pointer;">
-              <input type="checkbox" id="lock-ratio" checked /> 원두 양 변경 시 물의 양(비율) 자동 연동
-            </label>
-            <button class="mini-btn" onclick="setRatio(16)">1:16 맞춤</button>
-          </div>
+        <div class="ctrl-item">
+          <div class="ctrl-head"><span>분쇄도</span><span class="ctrl-val" id="l-grind">780 μm</span></div>
+          <input type="range" id="grind" min="500" max="1100" step="10" value="780" oninput="upd()">
         </div>
-
-        <!-- 2. 원두 분쇄도 -->
-        <div class="control-item">
-          <div class="control-header">
-            <span class="control-name">2. 원두 분쇄도 (Grind Size)</span>
-            <span class="control-val" id="grind-label">800 μm (중굵기)</span>
-          </div>
-          <input type="range" id="grind" min="450" max="1150" step="20" value="800" oninput="updateDial()" />
-          <div class="control-labels">
-            <span>450μm (가늘게)</span>
-            <span id="grind-rec-label">권장: 800μm</span>
-            <span>1150μm (굵게)</span>
-          </div>
+        <div class="ctrl-item">
+          <div class="ctrl-head"><span>물 온도</span><span class="ctrl-val" id="l-temp">94.0 °C</span></div>
+          <input type="range" id="temp" min="85" max="98" step="0.5" value="94.0" oninput="upd()">
         </div>
-
-        <!-- 3. 물 온도 -->
-        <div class="control-item">
-          <div class="control-header">
-            <span class="control-name">3. 추출수 온도 (Water Temp)</span>
-            <span class="control-val" id="temp-label">92.5 °C</span>
-          </div>
-          <input type="range" id="temp" min="85" max="98" step="0.5" value="92.5" oninput="updateDial()" />
-          <div class="control-labels">
-            <span>85°C (강배전)</span>
-            <span>92.5°C (표준)</span>
-            <span>98°C (약배전)</span>
-          </div>
+        <div class="ctrl-item">
+          <div class="ctrl-head"><span>추출 시간</span><span class="ctrl-val" id="l-time">3분 35초</span></div>
+          <input type="range" id="time" min="120" max="300" step="5" value="215" oninput="upd()">
         </div>
-
-        <!-- 4. 추출 시간 -->
-        <div class="control-item">
-          <div class="control-header">
-            <span class="control-name">4. 총 추출 시간 (Brew Time)</span>
-            <span class="control-val" id="time-label">3분 30초 (210초)</span>
-          </div>
-          <input type="range" id="time" min="90" max="330" step="5" value="210" oninput="updateDial()" />
-          <div class="control-labels">
-            <span>1분 30초 (빠름)</span>
-            <span id="time-rec-label">권장: 3분 30초</span>
-            <span>5분 30초 (김)</span>
-          </div>
+        <div class="ctrl-item">
+          <div class="ctrl-head"><span>총 물의 양</span><span class="ctrl-val" id="l-water">495 g</span></div>
+          <input type="range" id="water" min="200" max="750" step="5" value="495" oninput="upd()">
         </div>
-
-        <!-- 5. 물의 양 -->
-        <div class="control-item">
-          <div class="control-header">
-            <span class="control-name">5. 총 물의 양 (Water Weight)</span>
-            <span class="control-val" id="water-label">480 g (1:16.0)</span>
-          </div>
-          <input type="range" id="water" min="120" max="950" step="10" value="480" oninput="onWaterChange()" />
-          <div class="control-labels">
-            <span>120g (소량/고농도)</span>
-            <span>480g (표준)</span>
-            <span>950g (대용량)</span>
-          </div>
-          <div class="ratio-sync-row">
-            <span style="font-size:11px; color:var(--text-sub);">빠른 비율 설정:</span>
-            <div>
-              <button class="mini-btn" onclick="setRatio(14)">1:14 (진하게)</button>
-              <button class="mini-btn" onclick="setRatio(16)">1:16 (표준)</button>
-              <button class="mini-btn" onclick="setRatio(17.5)">1:17.5 (연하게)</button>
-            </div>
-          </div>
-        </div>
-
-        <button class="start-brew-btn" style="width:100%; justify-content:center; margin-top:8px;" onclick="openBrewModal()">
-          <span>▶ 이 세팅으로 추출 시작하기</span>
-        </button>
+        <button class="start-brew-btn" style="margin-top:16px;" onclick="openModal()">▶ 3D 라이브 추출 시작</button>
       </div>
 
-      <!-- Right: Visualizations -->
       <div class="panel">
-        <div class="panel-title">
-          <span>실시간 향미 균형 (신맛 · 단맛 · 쓴맛) & 추출 그래프</span>
+        <div class="kpi-grid" style="margin-bottom:12px;">
+          <div class="kpi-card"><div class="kpi-lbl">수율 (EY)</div><div class="kpi-val" id="k-ey">20.0%</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">농도 (TDS)</div><div class="kpi-val" id="k-tds">1.43%</div></div>
         </div>
-
-        <!-- Flavor Balance Gauge -->
-        <div class="balance-meter-wrap">
-          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700;">
-            <span style="color:var(--sour-color);">◀ 신맛 지배 (과소 추출)</span>
-            <span style="color:var(--sweet-color);">● 단맛 · 복합미 밸런스 (Sweet Spot)</span>
-            <span style="color:var(--bitter-color);">쓴맛 · 떫은맛 지배 (과다 추출) ▶</span>
-          </div>
-          <div class="meter-track">
-            <div class="meter-sweet-zone" title="스윗 스팟 구간"></div>
-            <div class="meter-pointer" id="balance-pointer" style="left: 50%;"></div>
-          </div>
-
-          <div class="flavor-bars">
-            <div class="flavor-box">
-              <div class="flavor-box-head">
-                <span style="color:var(--sour-color);">산미 (Acidity/신맛)</span>
-                <span id="sour-pct">31%</span>
-              </div>
-              <div class="bar-bg"><div class="bar-fill" id="sour-bar" style="width:31%; background:var(--sour-color);"></div></div>
-            </div>
-            <div class="flavor-box">
-              <div class="flavor-box-head">
-                <span style="color:var(--sweet-color);">단맛 (Sweetness)</span>
-                <span id="sweet-pct">44%</span>
-              </div>
-              <div class="bar-bg"><div class="bar-fill" id="sweet-bar" style="width:44%; background:var(--sweet-color);"></div></div>
-            </div>
-            <div class="flavor-box">
-              <div class="flavor-box-head">
-                <span style="color:var(--bitter-color);">쓴맛·바디 (Bitterness)</span>
-                <span id="bitter-pct">25%</span>
-              </div>
-              <div class="bar-bg"><div class="bar-fill" id="bitter-bar" style="width:25%; background:var(--bitter-color);"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Two Canvas Charts -->
-        <div class="charts-grid">
-          <div>
-            <div style="font-size:13px; font-weight:700; margin-bottom:6px; color:#495057;">
-              ① 추출 시간별 신맛·단맛·쓴맛 용출 속도 및 누적 수율 곡선
-            </div>
-            <canvas id="timeChart" class="chart-canvas" width="460" height="260"></canvas>
-          </div>
-          <div>
-            <div style="font-size:13px; font-weight:700; margin-bottom:6px; color:#495057;">
-              ② SCA 브루잉 컨트롤 차트 (수율 EY vs 농도 TDS)
-            </div>
-            <canvas id="scaChart" class="chart-canvas" width="350" height="260"></canvas>
-          </div>
-        </div>
-
-        <!-- Dynamic Barista Advice -->
-        <div class="diagnosis-box">
-          <div class="diagnosis-title" id="diag-title">바리스타 다이얼링 진단</div>
-          <div id="diag-desc">드리퍼와 원두 양에 맞는 최적의 추출 상태입니다.</div>
-        </div>
+        <div class="p-title">SCA 브루잉 컨트롤 차트</div>
+        <canvas id="scaChart" class="chart"></canvas>
       </div>
+    </div>
+
+    <!-- 게시판 -->
+    <div class="r-board">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 id="board-title">📔 나의 레시피 노트</h3>
+        <button onclick="saveRecipe()" style="padding:8px 16px; border-radius:20px; background:var(--theme); color:#fff; border:none; font-weight:800; cursor:pointer;">⭐ 이 세팅 저장하기</button>
+      </div>
+      <div class="r-grid" id="r-grid"></div>
     </div>
   </div>
 
-  <!-- ================= 라이브 브루잉 애니메이션 & 타이머 모달 ================= -->
-  <div class="modal-overlay" id="brewModal">
-    <div class="brew-modal">
-      <div class="modal-header">
-        <div>
-          <h2 id="modal-dripper-title">오찬욱 바리스타 라이브 브루잉 가이드</h2>
-          <div style="font-size:12px; opacity:0.9;" id="modal-recipe-summary">원두 30g · 물 480g · 92.5°C · 총 3분 30초</div>
-        </div>
-        <button class="close-modal-btn" onclick="closeBrewModal()">✕ 닫기</button>
+  <!-- 3D 애니메이션 모달 -->
+  <div class="m-overlay" id="brewModal">
+    <div class="m-box">
+      <div class="m-head">
+        <h2 id="m-title">3D 라이브 추출 가이드</h2>
+        <button class="close-modal-btn" onclick="closeModal()">✕ 닫기</button>
       </div>
-
-      <div class="modal-body">
-        <!-- 왼쪽: 드리퍼 애니메이션 캔버스 -->
-        <div class="anim-stage-box">
-          <canvas id="brewAnimCanvas" width="330" height="390"></canvas>
-          <div style="font-size:12px; color:#495057; font-weight:700; margin-top:6px;">
-            🔊 단계별 시작 시점과 종료 시점에 알림음 및 음성 안내가 울립니다
-          </div>
+      <div class="m-body">
+        <div class="anim-box">
+          <canvas id="animCanvas" width="380" height="440"></canvas>
         </div>
-
-        <!-- 오른쪽: 실시간 타이머 + 물 무게 + 4단계 푸어링 스케줄 -->
-        <div class="brew-info-box">
-          <div class="timer-display-row">
-            <div class="big-stat-card">
-              <div class="big-stat-label">경과 시간 / 목표 시간</div>
-              <div class="big-stat-num" id="live-timer-text">00:00</div>
-              <div class="big-stat-sub" id="live-target-time-text">목표 03:30</div>
-            </div>
-            <div class="big-stat-card">
-              <div class="big-stat-label">현재 부은 물의 양 (저울)</div>
-              <div class="big-stat-num" id="live-water-text">0 g</div>
-              <div class="big-stat-sub" id="live-target-water-text">목표 480 g</div>
-            </div>
+        <div class="info-box">
+          <div class="b-stat">
+            <div class="b-card"><div style="font-size:13px; font-weight:800; color:var(--txt-s)">경과 시간</div><div class="b-num" id="l-time-txt">00:00</div></div>
+            <div class="b-card"><div style="font-size:13px; font-weight:800; color:var(--txt-s)">부은 물 (저울)</div><div class="b-num" id="l-water-txt">0 g</div></div>
           </div>
-
-          <div class="stage-alert-banner" id="stage-banner">
-            <div class="stage-banner-title" id="stage-banner-title">준비 완료: [추출 시작] 버튼을 눌러주세요</div>
-            <div class="stage-banner-desc" id="stage-banner-desc">드리퍼에 분쇄 원두를 담고 평평하게 고른 뒤 시작을 누르면 1차 뜸들이기부터 안내합니다.</div>
+          <div class="alert-banner" id="stage-banner">
+            <h3 style="color:var(--theme-d); margin-bottom:4px; font-size:18px;" id="s-title">준비 완료</h3>
+            <p style="font-weight:700;" id="s-desc">[추출 시작] 버튼을 누르면 10초 카운트다운 후 시작됩니다.</p>
           </div>
-
-          <div class="schedule-list" id="schedule-list">
-            <!-- JS에서 4단계 스케줄 동적 생성 -->
-          </div>
-
-          <div class="modal-controls">
-            <button class="ctrl-btn ctrl-btn-primary" id="btn-toggle-brew" onclick="toggleBrewTimer()">▶ 추출 시작</button>
-            <button class="ctrl-btn ctrl-btn-secondary" onclick="resetBrewTimer()">↺ 처음부터 리셋</button>
-            <button class="ctrl-btn ctrl-btn-secondary" id="btn-sound-toggle" onclick="toggleSound()">🔊 소리 켜짐</button>
+          <div class="s-list" id="s-list"></div>
+          <div class="c-btns">
+            <button class="c-btn" style="background:var(--theme); color:#fff;" id="btn-toggle" onclick="toggleBrew()">▶ 추출 시작</button>
+            <button class="c-btn" style="background:#e9ecef;" onclick="resetBrew()">↺ 리셋</button>
           </div>
         </div>
       </div>
@@ -974,1003 +210,152 @@
   </div>
 
   <script>
-    // 드리퍼 3종 물리·향미 특성 프로필
-    const DRIPPERS = {
-      bluebottle: {
-        name: '블루보틀 드리퍼',
-        badge: 'B',
-        themeColor: '#00a1e4',
-        themeDark: '#0077ac',
-        themeSoft: '#e7f5ff',
-        baseGrind30: 800,
-        baseTime30: 210,
-        flowSpeedFactor: 1.0,
-        retentionRatio: 2.0,
-        acidityBias: 1.0,
-        sweetnessBias: 1.12,
-        bodyBias: 1.05,
-        chokeThreshold: 640
-      },
-      hario: {
-        name: '하리오 V60',
-        badge: 'V',
-        themeColor: '#e03131',
-        themeDark: '#c92a2a',
-        themeSoft: '#fff5f5',
-        baseGrind30: 720,
-        baseTime30: 185,
-        flowSpeedFactor: 1.16,
-        retentionRatio: 1.9,
-        acidityBias: 1.15,
-        sweetnessBias: 1.0,
-        bodyBias: 0.92,
-        chokeThreshold: 540
-      },
-      kalita: {
-        name: '칼리타 웨이브',
-        badge: 'K',
-        themeColor: '#d9480f',
-        themeDark: '#b43c0c',
-        themeSoft: '#fff4e6',
-        baseGrind30: 840,
-        baseTime30: 220,
-        flowSpeedFactor: 0.92,
-        retentionRatio: 2.1,
-        acidityBias: 0.92,
-        sweetnessBias: 1.15,
-        bodyBias: 1.12,
-        chokeThreshold: 690
+    // ================= 1. DB 및 매트릭스 설계 =================
+    const MATRIX = {
+      'geisha': { tmp:95.0, r:17.0, g:[660,700,740,760,820], t:[155,175,195,215,245] },
+      'yirgacheffe': { tmp:94.0, r:16.5, g:[680,720,750,780,840], t:[155,175,195,215,245] },
+      'kenya': { tmp:93.5, r:16.0, g:[700,740,770,800,860], t:[160,180,195,215,245] },
+      'colombia': { tmp:92.0, r:16.0, g:[720,760,780,800,860], t:[155,175,190,210,240] },
+      'thailand': { tmp:91.5, r:16.0, g:[720,760,780,800,860], t:[155,175,190,210,240] },
+      'guatemala': { tmp:90.5, r:15.5, g:[740,780,800,820,880], t:[150,170,185,205,235] },
+      'mandheling': { tmp:88.0, r:14.5, g:[780,820,850,880,940], t:[140,160,175,190,220] },
+      'darkblend': { tmp:87.0, r:14.0, g:[800,840,870,900,960], t:[135,155,170,185,215] }
+    };
+    const DOSES = [15, 20, 25, 30, 40];
+    let curDoseIdx = 3;
+    let userName = "오찬욱";
+    let isMaster = false;
+    let curDrip = 'bluebottle';
+
+    // ================= 2. 인증 로직 =================
+    window.onload = () => {
+      const urlName = new URLSearchParams(window.location.search).get('name');
+      if(urlName) {
+        userName = urlName;
+        login('guest');
       }
     };
 
-    let currentDripper = 'bluebottle';
-    let savedRatio = 16.0;
-
-    function formatTime(sec) {
-      const m = Math.floor(sec / 60);
-      const s = Math.round(sec % 60);
-      return `${m}분 ${s < 10 ? '0' + s : s}초 (${Math.round(sec)}초)`;
-    }
-
-    function formatMMSS(sec) {
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      return `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-    }
-
-    function getRecommendedParams(dripperKey, dose) {
-      const d = DRIPPERS[dripperKey];
-      const recGrind = Math.round((d.baseGrind30 + (dose - 30) * 4.5) / 20) * 20;
-      const recTime = Math.round((d.baseTime30 * Math.pow(dose / 30, 0.28)) / 5) * 5;
-      return { recGrind, recTime };
-    }
-
-    function selectDripper(dripperKey) {
-      currentDripper = dripperKey;
-      const d = DRIPPERS[dripperKey];
-
-      document.documentElement.style.setProperty('--theme-color', d.themeColor);
-      document.documentElement.style.setProperty('--theme-dark', d.themeDark);
-      document.documentElement.style.setProperty('--theme-soft', d.themeSoft);
-
-      document.getElementById('logo-badge').textContent = d.badge;
-      document.getElementById('dripper-indicator').textContent = `${d.name} 선택됨`;
-
-      ['bluebottle', 'hario', 'kalita'].forEach(k => {
-        document.getElementById('card-' + k).classList.toggle('active', k === dripperKey);
-      });
-
-      const dose = parseFloat(document.getElementById('dose').value);
-      const { recGrind, recTime } = getRecommendedParams(dripperKey, dose);
-      document.getElementById('grind').value = recGrind;
-      document.getElementById('time').value = recTime;
-
-      updateDial();
-    }
-
-    function onDoseChange() {
-      const dose = parseFloat(document.getElementById('dose').value);
-      const lockRatio = document.getElementById('lock-ratio').checked;
-      if (lockRatio) {
-        const newWater = Math.round((dose * savedRatio) / 10) * 10;
-        const waterEl = document.getElementById('water');
-        waterEl.value = Math.max(120, Math.min(950, newWater));
-      }
-      updateDial();
-    }
-
-    function onWaterChange() {
-      const dose = parseFloat(document.getElementById('dose').value);
-      const water = parseFloat(document.getElementById('water').value);
-      savedRatio = water / dose;
-      updateDial();
-    }
-
-    function setRatio(targetRatio) {
-      savedRatio = targetRatio;
-      const dose = parseFloat(document.getElementById('dose').value);
-      const newWater = Math.round((dose * targetRatio) / 10) * 10;
-      document.getElementById('water').value = Math.max(120, Math.min(950, newWater));
-      updateDial();
-    }
-
-    function applyPreset(type, btnEl) {
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-
-      const doseEl = document.getElementById('dose');
-      const grindEl = document.getElementById('grind');
-      const tempEl = document.getElementById('temp');
-      const timeEl = document.getElementById('time');
-      const waterEl = document.getElementById('water');
-
-      if (type === 'standard') {
-        doseEl.value = 30;
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, 30);
-        grindEl.value = recGrind; tempEl.value = 92.5; timeEl.value = recTime; waterEl.value = 480;
-        savedRatio = 16.0;
-      } else if (type === 'single15') {
-        doseEl.value = 15;
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, 15);
-        grindEl.value = recGrind; tempEl.value = 93.0; timeEl.value = recTime; waterEl.value = 240;
-        savedRatio = 16.0;
-      } else if (type === 'batch45') {
-        doseEl.value = 45;
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, 45);
-        grindEl.value = recGrind; tempEl.value = 92.0; timeEl.value = recTime; waterEl.value = 720;
-        savedRatio = 16.0;
-      } else if (type === 'light') {
-        const dose = parseFloat(doseEl.value);
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
-        grindEl.value = recGrind - 40; tempEl.value = 95.0; timeEl.value = recTime + 10;
-        waterEl.value = Math.round((dose * 17) / 10) * 10;
-        savedRatio = 17.0;
-      } else if (type === 'bold') {
-        const dose = parseFloat(doseEl.value);
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
-        grindEl.value = recGrind + 20; tempEl.value = 89.5; timeEl.value = recTime - 10;
-        waterEl.value = Math.round((dose * 13.5) / 10) * 10;
-        savedRatio = 13.5;
-      } else if (type === 'under') {
-        const dose = parseFloat(doseEl.value);
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
-        grindEl.value = recGrind + 180; tempEl.value = 87.5; timeEl.value = Math.max(95, recTime - 55);
-        waterEl.value = Math.round((dose * 14) / 10) * 10;
-        savedRatio = 14.0;
-      } else if (type === 'over') {
-        const dose = parseFloat(doseEl.value);
-        const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
-        grindEl.value = recGrind - 180; tempEl.value = 96.5; timeEl.value = recTime + 60;
-        waterEl.value = Math.round((dose * 18) / 10) * 10;
-        savedRatio = 18.0;
-      }
-      updateDial();
-    }
-
-    function updateDial() {
-      const d = DRIPPERS[currentDripper];
-      const dose = parseFloat(document.getElementById('dose').value);
-      const grind = parseFloat(document.getElementById('grind').value);
-      const temp = parseFloat(document.getElementById('temp').value);
-      const time = parseFloat(document.getElementById('time').value);
-      const water = parseFloat(document.getElementById('water').value);
-
-      const { recGrind, recTime } = getRecommendedParams(currentDripper, dose);
-      document.getElementById('grind-rec-label').textContent = `${d.name} ${dose}g 권장: ${recGrind}μm`;
-      document.getElementById('time-rec-label').textContent = `권장: ${formatTime(recTime).split(' (')[0]}`;
-
-      let cupCount = dose <= 18 ? '1인분' : (dose <= 32 ? '2~3인분' : '3~5인분 대용량');
-      document.getElementById('dose-label').textContent = `${dose} g (${cupCount})`;
-
-      let grindDesc = grind < recGrind - 80 ? '가늘게' : (grind <= recGrind + 80 ? '권장 범위' : '굵게');
-      document.getElementById('grind-label').textContent = `${grind} μm (${grindDesc})`;
-      document.getElementById('temp-label').textContent = `${temp.toFixed(1)} °C`;
-      document.getElementById('time-label').textContent = formatTime(time);
-
-      const ratio = water / dose;
-      document.getElementById('water-label').textContent = `${water} g (1:${ratio.toFixed(1)})`;
-
-      const grindFactor = Math.pow(recGrind / grind, 0.72);
-      const tempFactor = 1 + 0.018 * (temp - 92.5);
-      const timeTau = recTime * 0.52;
-      const timeFactor = (1 - Math.exp(-time / timeTau)) / (1 - Math.exp(-recTime / timeTau));
-      const ratioFactor = Math.pow(ratio / 16.0, 0.36);
-
-      let ey = 20.0 * grindFactor * tempFactor * timeFactor * ratioFactor;
-      ey = Math.max(11.5, Math.min(26.8, ey));
-
-      const retention = dose * d.retentionRatio;
-      const beverageWeight = Math.max(50, water - retention);
-      const extractedSolubles = dose * (ey / 100.0);
-      const tds = (extractedSolubles / beverageWeight) * 100.0;
-
-      const naturalDrainTime = recTime * Math.pow(recGrind / grind, 1.15) * Math.pow(ratio / 16.0, 0.5);
-      const timeDiff = time - naturalDrainTime;
-
-      const chokeLimit = d.chokeThreshold + (dose - 30) * 3.5;
-      const isChoking = grind < chokeLimit;
-      const stallPenalty = (isChoking && time > recTime + 20) ? 1.8 : 0;
-
-      const balanceIndex = Math.max(-100, Math.min(100,
-        (ey - 20.0) * 16.5 + (temp - 92.5) * 2.8 + (time - recTime) * 0.12 + stallPenalty * 8
-      ));
-
-      const sourRaw = Math.max(6, (50 - (ey - 16.5) * 7.2 - (temp - 92.5) * 1.1) * d.acidityBias);
-      const sweetRaw = Math.max(8, (60 - Math.pow(ey - 20.0, 2) * 4.5 - Math.pow((temp - 92.5) * 0.4, 2)) * d.sweetnessBias);
-      const bitterRaw = Math.max(6, (16 + (ey - 17.5) * 7.8 + (temp - 91.0) * 2.2 + (time > recTime + 25 ? (time - recTime - 25) * 0.25 : 0)) * d.bodyBias);
-
-      const totalFlavor = sourRaw + sweetRaw + bitterRaw;
-      const sourPct = Math.round((sourRaw / totalFlavor) * 100);
-      const sweetPct = Math.round((sweetRaw / totalFlavor) * 100);
-      const bitterPct = 100 - sourPct - sweetPct;
-
-      document.getElementById('ey-val').textContent = `${ey.toFixed(1)}%`;
-      const eyBadge = document.getElementById('ey-badge');
-      if (ey < 18.0) {
-        eyBadge.textContent = '과소 추출'; eyBadge.className = 'badge badge-warn';
-      } else if (ey <= 22.0) {
-        eyBadge.textContent = '이상적 수율'; eyBadge.className = 'badge badge-good';
+    function showGuestInput() { document.getElementById('btn-guest-enter').style.display='none'; document.getElementById('guest-name').style.display='block'; document.getElementById('btn-submit-guest').style.display='block'; }
+    function showMasterInput() { document.getElementById('btn-show-master').style.display='none'; document.getElementById('master-code').style.display='block'; document.getElementById('btn-submit-master').style.display='block'; }
+    
+    function login(mode) {
+      if(mode==='master') {
+        if(document.getElementById('master-code').value !== '7777') return alert('코드 오류');
+        isMaster = true; userName = "오찬욱";
       } else {
-        eyBadge.textContent = '과다 추출'; eyBadge.className = 'badge badge-bad';
+        const inputName = document.getElementById('guest-name').value;
+        if(!inputName && userName === "오찬욱") return alert('이름을 입력하세요.');
+        if(inputName) userName = inputName;
+        isMaster = false;
       }
-
-      document.getElementById('tds-val').textContent = `${tds.toFixed(2)}%`;
-      document.getElementById('ratio-sub').textContent = `원두 ${dose}g · 비율 1:${ratio.toFixed(1)} · 추출액 ${Math.round(beverageWeight)}g`;
-      const tdsBadge = document.getElementById('tds-badge');
-      if (tds < 1.15) {
-        tdsBadge.textContent = '연한 농도 (Weak)'; tdsBadge.className = 'badge badge-warn';
-      } else if (tds <= 1.50) {
-        tdsBadge.textContent = '골든컵 농도'; tdsBadge.className = 'badge badge-good';
+      document.getElementById('authOverlay').style.display='none';
+      document.getElementById('mainContainer').style.display='block';
+      
+      const badge = document.getElementById('role-badge');
+      if(isMaster) {
+        badge.className = 'user-badge badge-master'; badge.textContent = '👑 마스터';
+        document.getElementById('welcome-msg').textContent = '오찬욱 바리스타님, 접속을 환영합니다.';
+        document.getElementById('copy-link-btn').style.display = 'block';
+        document.getElementById('board-title').textContent = '👑 전체 유저 레시피 DB';
       } else {
-        tdsBadge.textContent = '진한 농도 (Strong)'; tdsBadge.className = 'badge badge-warn';
+        badge.className = 'user-badge badge-guest'; badge.textContent = '☕ 게스트';
+        document.getElementById('welcome-msg').textContent = `${userName} 님, 환영합니다!`;
       }
-
-      const avgFlow = (water / time).toFixed(2);
-      const flowVal = document.getElementById('flow-val');
-      const flowBadge = document.getElementById('flow-badge');
-      const flowSub = document.getElementById('flow-sub');
-      flowSub.textContent = `평균 유속 ${avgFlow} g/s · 예상 자연 배수 ${Math.round(naturalDrainTime)}초`;
-
-      if (isChoking) {
-        flowVal.textContent = '병목·막힘 주의';
-        flowBadge.textContent = '추출구 배수 정체'; flowBadge.className = 'badge badge-bad';
-      } else if (Math.abs(timeDiff) <= 30) {
-        flowVal.textContent = '적정 저항';
-        flowBadge.textContent = '유속 안정'; flowBadge.className = 'badge badge-good';
-      } else if (timeDiff < -30) {
-        flowVal.textContent = '빠른 푸어링 필요';
-        flowBadge.textContent = '분쇄도 대비 시간 짧음'; flowBadge.className = 'badge badge-warn';
-      } else {
-        flowVal.textContent = '분할 푸어링 권장';
-        flowBadge.textContent = '분쇄도 대비 시간 김'; flowBadge.className = 'badge badge-warn';
-      }
-
-      const pointerPos = Math.max(4, Math.min(96, 50 + balanceIndex * 0.45));
-      document.getElementById('balance-pointer').style.left = `${pointerPos}%`;
-
-      document.getElementById('sour-pct').textContent = `${sourPct}%`;
-      document.getElementById('sweet-pct').textContent = `${sweetPct}%`;
-      document.getElementById('bitter-pct').textContent = `${bitterPct}%`;
-      document.getElementById('sour-bar').style.width = `${sourPct}%`;
-      document.getElementById('sweet-bar').style.width = `${sweetPct}%`;
-      document.getElementById('bitter-bar').style.width = `${bitterPct}%`;
-
-      const flavorVal = document.getElementById('flavor-val');
-      const flavorBadge = document.getElementById('flavor-badge');
-      const flavorSub = document.getElementById('flavor-sub');
-
-      if (balanceIndex < -22) {
-        flavorVal.textContent = '신맛 지배 (과소 추출)';
-        flavorBadge.textContent = '산미 치우침'; flavorBadge.className = 'badge badge-warn';
-        flavorSub.textContent = '단맛이 부족해 날카로운 신맛과 풋내가 두드러짐';
-      } else if (balanceIndex <= 22) {
-        flavorVal.textContent = '이상적인 스윗 스팟';
-        flavorBadge.textContent = '최적 밸런스'; flavorBadge.className = 'badge badge-good';
-        flavorSub.textContent = `${d.name}의 장점이 살아난 풍부한 단맛과 조화로운 여운`;
-      } else {
-        flavorVal.textContent = '쓴맛·떫은맛 과다';
-        flavorBadge.textContent = '과다 용출'; flavorBadge.className = 'badge badge-bad';
-        flavorSub.textContent = '후반부 고분자 쓴맛과 혀가 마르는 떫은맛(Astringency) 발생';
-      }
-
-      updateDiagnosis(d, dose, grind, temp, time, water, ratio, ey, tds, recGrind, recTime, isChoking);
-      drawTimeChart(time, recTime, ey, temp, grind, recGrind, d.themeColor);
-      drawScaChart(ey, tds, d.themeColor, d.themeDark);
+      applyMatrix(); renderDB();
     }
 
-    function updateDiagnosis(d, dose, grind, temp, time, water, ratio, ey, tds, recGrind, recTime, isChoking) {
-      const titleEl = document.getElementById('diag-title');
-      const descEl = document.getElementById('diag-desc');
-      let tips = [];
-
-      if (ey < 18.0) {
-        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 과소 추출 — 신맛이 날카롭고 단맛이 비어 있습니다`;
-        if (grind > recGrind + 60) tips.push(`원두 ${dose}g 기준 현재 분쇄도(${grind}μm)가 너무 굵습니다. ${recGrind}μm 부근으로 조여주세요.`);
-        if (temp < 90.5) tips.push(`물 온도(${temp}°C)가 낮아 당류 용출이 부족합니다. 92~94°C로 높여보세요.`);
-        if (time < recTime - 25) tips.push(`추출 시간(${time}초)이 짧습니다. 분할 푸어링으로 ${formatTime(recTime).split(' (')[0]} 내외까지 접촉 시간을 늘려주세요.`);
-        if (ratio < 14.5) tips.push(`추출 비율(1:${ratio.toFixed(1)})이 낮아 용매가 부족합니다. 물의 양을 ${Math.round(dose * 16)}g(1:16) 부근으로 늘려보세요.`);
-      } else if (ey > 22.0) {
-        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 과다 추출 — 쓴맛과 떫은 드라이함이 지배적입니다`;
-        if (isChoking || grind < recGrind - 60) tips.push(`원두 ${dose}g에서 ${grind}μm는 너무 가늘어 ${d.name} 하단 추출구에 병목이 생깁니다. ${recGrind}μm 이상으로 굵게 풀어주세요.`);
-        if (temp > 94.5) tips.push(`물 온도(${temp}°C)가 높아 후반부 잡미가 빠르게 녹아나옵니다. 91~93°C로 낮춰보세요.`);
-        if (time > recTime + 30) tips.push(`추출 시간(${time}초)이 너무 깁니다. ${formatTime(recTime).split(' (')[0]} 시점에 드리퍼를 서버에서 먼저 치우세요.`);
-      } else {
-        titleEl.textContent = `[${d.name} · 원두 ${dose}g] 이상적인 골든컵 구간 (Sweet Spot)`;
-        tips.push(`추출 수율 ${ey.toFixed(1)}%, 농도 ${tds.toFixed(2)}%(비율 1:${ratio.toFixed(1)})로 밸런스가 훌륭합니다.`);
-        if (currentDripper === 'hario') {
-          tips.push(`하리오 V60 특유의 빠른 유속 덕분에 산미가 투명하게 살아납니다. 중심부 위주로 나선형 푸어링을 유지하세요.`);
-        } else if (currentDripper === 'kalita') {
-          tips.push(`칼리타 웨이브의 3공 플랫베드가 물 빠짐을 일정하게 잡아주어 단맛과 바디감이 안정적으로 추출됩니다.`);
-        } else {
-          tips.push(`블루보틀 드리퍼의 40개 모세관 리브와 플랫베드가 ${dose}g의 커피층을 고르게 적셔 깊은 단맛을 만들어냅니다.`);
-        }
+    function copyGuestLink() {
+      const n = prompt("초대할 지인의 이름을 입력하세요:");
+      if(n) {
+        const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(n)}`; navigator.clipboard.writeText(link); alert(`초대 링크가 복사되었습니다!\n${link}`);
       }
-
-      descEl.textContent = tips.join(' ');
     }
 
-    function drawTimeChart(targetTime, recTime, finalEy, temp, grind, recGrind, themeColor) {
-      const canvas = document.getElementById('timeChart');
-      const ctx = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
+    // ================= 3. 조작 및 계산 =================
+    function selDripper(d) {
+      curDrip = d;
+      ['bluebottle','hario','kalita'].forEach(k => document.getElementById('card-'+k).classList.toggle('active', k===d));
+      const root = document.documentElement.style;
+      if(d==='bluebottle'){root.setProperty('--theme','#00a1e4'); root.setProperty('--theme-d','#0077ac');}
+      if(d==='hario'){root.setProperty('--theme','#e03131'); root.setProperty('--theme-d','#c92a2a');}
+      if(d==='kalita'){root.setProperty('--theme','#d9480f'); root.setProperty('--theme-d','#b43c0c');}
+      applyMatrix();
+    }
 
-      const padL = 42, padR = 42, padT = 22, padB = 34;
-      const plotW = W - padL - padR;
-      const plotH = H - padT - padB;
-      const maxT = 330;
+    function setDoseIdx(idx) {
+      curDoseIdx = idx;
+      for(let i=0;i<5;i++) document.getElementById('btn-d'+i).className = (i===idx)?'d-btn active':'d-btn';
+      applyMatrix();
+    }
 
-      const x1 = padL + (Math.max(0, recTime - 20) / maxT) * plotW;
-      const x2 = padL + (Math.min(maxT, recTime + 20) / maxT) * plotW;
-      ctx.fillStyle = 'rgba(55, 178, 77, 0.09)';
-      ctx.fillRect(x1, padT, x2 - x1, plotH);
+    function applyMatrix() {
+      const o = document.getElementById('origin-sel').value;
+      const m = MATRIX[o];
+      const dose = DOSES[curDoseIdx];
+      let grind = m.g[curDoseIdx];
+      let time = m.t[curDoseIdx];
+      
+      // 드리퍼 보정
+      if(curDrip==='hario') { grind -= 60; time -= 20; }
+      if(curDrip==='kalita') { grind += 40; time += 10; }
 
-      ctx.strokeStyle = '#e9ecef';
-      ctx.lineWidth = 1;
-      for (let i = 0; i <= 4; i++) {
-        const y = padT + (plotH / 4) * i;
-        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
-      }
+      document.getElementById('dose').value = dose;
+      document.getElementById('grind').value = grind;
+      document.getElementById('temp').value = m.tmp;
+      document.getElementById('time').value = time;
+      document.getElementById('water').value = Math.round(dose * m.r);
+      upd();
+    }
 
-      ctx.fillStyle = '#868e96';
-      ctx.font = '11px sans-serif';
-      ctx.textAlign = 'center';
-      [0, 60, 120, 180, 240, 300].forEach(sec => {
-        const x = padL + (sec / maxT) * plotW;
-        ctx.fillText(`${sec}s`, x, H - 10);
+    function upd() {
+      const d = parseFloat(document.getElementById('dose').value);
+      const g = parseFloat(document.getElementById('grind').value);
+      const tmp = parseFloat(document.getElementById('temp').value);
+      const t = parseFloat(document.getElementById('time').value);
+      const w = parseFloat(document.getElementById('water').value);
+
+      document.getElementById('l-dose').textContent = `${d} g`; document.getElementById('l-grind').textContent = `${g} μm`;
+      document.getElementById('l-temp').textContent = `${tmp.toFixed(1)} °C`; document.getElementById('l-time').textContent = `${Math.floor(t/60)}분 ${t\%60}초`; document.getElementById('l-water').textContent = `${w} g`;
+
+      let ey = 20.0 * Math.pow(780/g, 0.6) * (1+0.015*(tmp-92.5)) * (t/210) * Math.pow((w/d)/16, 0.35);
+      ey = Math.max(12, Math.min(26, ey));
+      const tds = (d * (ey/100)) / Math.max(50, w - d*2) * 100;
+
+      document.getElementById('k-ey').textContent = ey.toFixed(1)+'%';
+      document.getElementById('k-tds').textContent = tds.toFixed(2)+'%';
+      drawSCA(ey, tds);
+    }
+
+    function drawSCA(ey, tds) {
+      const c = document.getElementById('scaChart'); const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
+      const pW = c.width, pH = c.height;
+      ctx.fillStyle='rgba(0,161,228,0.1)'; ctx.fillRect(pW*(4/12), pH*(0.55/1.2), pW*(4/12), pH*(0.3/1.2));
+      const x = pW * ((Math.max(14,Math.min(26,ey))-14)/12);
+      const y = pH - (pH * ((Math.max(0.8,Math.min(2.0,tds))-0.8)/1.2));
+      ctx.beginPath(); ctx.fillStyle='#e03131'; ctx.arc(x, y, 7, 0, Math.PI*2); ctx.fill();
+    }
+
+    // ================= 4. DB 레시피 =================
+    function saveRecipe() {
+      const r = JSON.parse(localStorage.getItem('coffeeDB')||'[]');
+      const name = prompt("레시피 이름 (예: 콜롬비아 인생세팅)");
+      if(!name) return;
+      r.unshift({
+        id: Date.now(), author: userName, name: name, drip: curDrip,
+        d: document.getElementById('dose').value, g: document.getElementById('grind').value,
+        tmp: document.getElementById('temp').value, t: document.getElementById('time').value, w: document.getElementById('water').value
       });
-
-      const tempBoost = 1 + (temp - 92.5) * 0.025;
-      const grindBoost = Math.pow(recGrind / grind, 0.5);
-
-      ctx.beginPath();
-      ctx.strokeStyle = '#f59f00';
-      ctx.lineWidth = 2.2;
-      for (let t = 0; t <= maxT; t += 4) {
-        const x = padL + (t / maxT) * plotW;
-        const rate = (t > 12 ? Math.pow((t - 12) / 50, 1.4) * Math.exp(-(t - 12) / 50) : 0) * 1.8 * tempBoost;
-        const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
-        t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.strokeStyle = '#37b24d';
-      ctx.lineWidth = 2.2;
-      for (let t = 0; t <= maxT; t += 4) {
-        const x = padL + (t / maxT) * plotW;
-        const peakT = recTime * 0.52;
-        const rate = (t > 30 ? Math.pow((t - 30) / peakT, 2.1) * Math.exp(-(t - 30) / (peakT * 0.62)) : 0) * 1.45 * tempBoost * grindBoost;
-        const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
-        t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.strokeStyle = '#7950f2';
-      ctx.lineWidth = 2.2;
-      for (let t = 0; t <= maxT; t += 4) {
-        const x = padL + (t / maxT) * plotW;
-        const rate = (1 / (1 + Math.exp(-(t - (recTime * 0.88)) / 36))) * 0.85 * tempBoost * grindBoost;
-        const y = padT + plotH - Math.min(plotH, rate * plotH * 0.85);
-        t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.strokeStyle = '#212529';
-      ctx.lineWidth = 2.5;
-      const tau = recTime * 0.52;
-      const asymEy = finalEy / (1 - Math.exp(-targetTime / tau));
-      for (let t = 0; t <= maxT; t += 4) {
-        const x = padL + (t / maxT) * plotW;
-        const curEy = t < 20 ? (t / 20) * 2.0 : Math.min(27.5, asymEy * (1 - Math.exp(-t / tau)));
-        const y = padT + plotH - (curEy / 28.0) * plotH;
-        t === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      const targetX = padL + (targetTime / maxT) * plotW;
-      ctx.beginPath();
-      ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = themeColor;
-      ctx.lineWidth = 2;
-      ctx.moveTo(targetX, padT);
-      ctx.lineTo(targetX, padT + plotH);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      const targetY = padT + plotH - (finalEy / 28.0) * plotH;
-      ctx.beginPath();
-      ctx.fillStyle = themeColor;
-      ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#f59f00'; ctx.fillText('● 산미 용출', padL + 6, padT + 14);
-      ctx.fillStyle = '#37b24d'; ctx.fillText('● 단맛 용출', padL + 78, padT + 14);
-      ctx.fillStyle = '#7950f2'; ctx.fillText('● 쓴맛 용출', padL + 150, padT + 14);
-      ctx.fillStyle = '#212529'; ctx.fillText('— 누적 수율(EY)', padL + 225, padT + 14);
+      localStorage.setItem('coffeeDB', JSON.stringify(r));
+      renderDB();
     }
 
-    function drawScaChart(ey, tds, themeColor, themeDark) {
-      const canvas = document.getElementById('scaChart');
-      const ctx = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
-
-      const padL = 44, padR = 18, padT = 20, padB = 34;
-      const plotW = W - padL - padR;
-      const plotH = H - padT - padB;
-
-      const minEy = 14, maxEy = 26;
-      const minTds = 0.8, maxTds = 2.0;
-
-      const gx1 = padL + ((18 - minEy) / (maxEy - minEy)) * plotW;
-      const gx2 = padL + ((22 - minEy) / (maxEy - minEy)) * plotW;
-      const gy1 = padT + plotH - ((1.45 - minTds) / (maxTds - minTds)) * plotH;
-      const gy2 = padT + plotH - ((1.15 - minTds) / (maxTds - minTds)) * plotH;
-
-      ctx.strokeStyle = '#e9ecef';
-      ctx.lineWidth = 1;
-      [16, 18, 20, 22, 24].forEach(e => {
-        const x = padL + ((e - minEy) / (maxEy - minEy)) * plotW;
-        ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
-        ctx.fillStyle = '#868e96'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(`${e}%`, x, H - 10);
-      });
-
-      [1.0, 1.2, 1.4, 1.6, 1.8].forEach(t => {
-        const y = padT + plotH - ((t - minTds) / (maxTds - minTds)) * plotH;
-        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
-        ctx.fillStyle = '#868e96'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
-        ctx.fillText(`${t.toFixed(1)}%`, padL - 6, y + 3);
-      });
-
-      ctx.fillStyle = 'rgba(0, 161, 228, 0.12)';
-      ctx.fillRect(gx1, gy1, gx2 - gx1, gy2 - gy1);
-      ctx.strokeStyle = themeColor;
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(gx1, gy1, gx2 - gx1, gy2 - gy1);
-
-      ctx.fillStyle = themeDark;
-      ctx.font = 'bold 10px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('SCA Golden Cup', (gx1 + gx2) / 2, (gy1 + gy2) / 2 + 3);
-
-      ctx.fillStyle = '#adb5bd';
-      ctx.font = '10px sans-serif';
-      ctx.fillText('과소·진함', padL + 28, padT + 16);
-      ctx.fillText('과다·진함', W - padR - 28, padT + 16);
-      ctx.fillText('과소·연함', padL + 28, padT + plotH - 8);
-      ctx.fillText('과다·연함', W - padR - 28, padT + plotH - 8);
-
-      const curX = padL + ((Math.max(minEy, Math.min(maxEy, ey)) - minEy) / (maxEy - minEy)) * plotW;
-      const curY = padT + plotH - ((Math.max(minTds, Math.min(maxTds, tds)) - minTds) / (maxTds - minTds)) * plotH;
-
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(224, 49, 49, 0.25)';
-      ctx.arc(curX, curY, 11, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.fillStyle = '#e03131';
-      ctx.arc(curX, curY, 5.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-
-    // ================= 브루잉 타이머, 사운드 & 애니메이션 엔진 =================
-    let audioCtx = null;
-    let soundEnabled = true;
-    let brewRunning = false;
-    let brewElapsed = 0;
-    let brewLastTick = 0;
-    let brewAnimReq = null;
-    let pourStages = [];
-    let triggeredStageIdx = -1;
-    let finishTriggered = false;
-
-    function initAudio() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    // Web Audio API 차임벨 사운드 + 한국어 음성 안내(TTS)
-    function playNotification(type, voiceText) {
-      if (!soundEnabled) return;
-      initAudio();
-
-      if (audioCtx) {
-        const now = audioCtx.currentTime;
-        const notes = type === 'finish' ? [523.25, 659.25, 783.99, 1046.5] : [587.33, 880.0];
-        notes.forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.14);
-          gain.gain.setValueAtTime(0.22, now + idx * 0.14);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.45);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now + idx * 0.14);
-          osc.stop(now + idx * 0.14 + 0.46);
-        });
-      }
-
-      if ('speechSynthesis' in window && voiceText) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(voiceText);
-        utter.lang = 'ko-KR';
-        utter.rate = 1.05;
-        window.speechSynthesis.speak(utter);
-      }
-
-      const banner = document.getElementById('stage-banner');
-      banner.classList.remove('flash');
-      void banner.offsetWidth;
-      banner.classList.add('flash');
-    }
-
-    function toggleSound() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('btn-sound-toggle').textContent = soundEnabled ? '🔊 소리 켜짐' : '🔇 소리 꺼짐';
-    }
-
-    // 현재 세팅값 기반으로 4단계 푸어링 스케줄 생성
-    function buildPourStages() {
-      const dose = parseFloat(document.getElementById('dose').value);
-      const totalWater = parseFloat(document.getElementById('water').value);
-      const totalTime = parseFloat(document.getElementById('time').value);
-
-      // 1차 뜸들이기 물량: 원두 무게의 2배 (최소 30g, 전체 물량의 25% 이하)
-      const w1 = Math.min(Math.round(totalWater * 0.25), Math.round(dose * 2.1));
-      const w2 = Math.round(totalWater * 0.44);
-      const w3 = Math.round(totalWater * 0.74);
-      const w4 = totalWater;
-
-      // 단계별 시작 시간 배분
-      const t1 = 0;
-      const t2 = Math.min(40, Math.round(totalTime * 0.20)); // 뜸들이기 35~40초
-      const t3 = Math.round(totalTime * 0.43);
-      const t4 = Math.round(totalTime * 0.66);
-
-      pourStages = [
-        {
-          step: 1,
-          name: '1차 푸어링 (뜸들이기 / Blooming)',
-          startSec: t1,
-          pourEndSec: Math.min(t2 - 5, t1 + 15),
-          endSec: t2,
-          startWater: 0,
-          targetWater: w1,
-          addWater: w1,
-          desc: `원두 전체가 고르게 젖도록 ${w1}g까지 천천히 붓고 가스가 빠지도록 기다립니다.`,
-          voice: `1차 뜸들이기를 시작합니다. 물을 ${w1}그램까지 부어주세요.`
-        },
-        {
-          step: 2,
-          name: '2차 푸어링 (산미 & 초기 단맛 용출)',
-          startSec: t2,
-          pourEndSec: Math.min(t3 - 5, t2 + 22),
-          endSec: t3,
-          startWater: w1,
-          targetWater: w2,
-          addWater: w2 - w1,
-          desc: `중심에서 바깥쪽으로 나선형을 그리며 누적 ${w2}g(+${w2 - w1}g)까지 부어줍니다.`,
-          voice: `2차 물 붓기 시간입니다. 누적 ${w2}그램까지 부어주세요.`
-        },
-        {
-          step: 3,
-          name: '3차 푸어링 (단맛 & 바디감 극대화)',
-          startSec: t3,
-          pourEndSec: Math.min(t4 - 5, t3 + 22),
-          endSec: t4,
-          startWater: w2,
-          targetWater: w3,
-          addWater: w3 - w2,
-          desc: `수위를 유지하며 부드럽게 누적 ${w3}g(+${w3 - w2}g)까지 부어 단맛을 끌어올립니다.`,
-          voice: `3차 물 붓기 시간입니다. 누적 ${w3}그램까지 부어주세요.`
-        },
-        {
-          step: 4,
-          name: '4차 푸어링 (밸런스 완성 & 드로우다운)',
-          startSec: t4,
-          pourEndSec: Math.min(totalTime - 15, t4 + 22),
-          endSec: totalTime,
-          startWater: w3,
-          targetWater: w4,
-          addWater: w4 - w3,
-          desc: `최종 목표량 ${w4}g(+${w4 - w3}g)까지 채운 뒤 물이 모두 빠질 때까지 기다립니다.`,
-          voice: `마지막 4차 물 붓기 시간입니다. 최종 ${w4}그램까지 부어주세요.`
-        }
-      ];
-
-      const listEl = document.getElementById('schedule-list');
-      listEl.innerHTML = pourStages.map((s, idx) => `
-        <div class="schedule-item" id="sched-item-${idx}">
-          <div class="sched-time">${formatMMSS(s.startSec)} ~ ${formatMMSS(s.endSec)}</div>
-          <div>${s.name}</div>
-          <div class="sched-water">누적 ${s.targetWater}g (+${s.addWater}g)</div>
-        </div>
-      `).join('');
-    }
-
-    function openBrewModal() {
-      const d = DRIPPERS[currentDripper];
-      const dose = parseFloat(document.getElementById('dose').value);
-      const temp = parseFloat(document.getElementById('temp').value);
-      const time = parseFloat(document.getElementById('time').value);
-      const water = parseFloat(document.getElementById('water').value);
-
-      document.getElementById('modal-dripper-title').textContent = `오찬욱 바리스타 라이브 추출 (${d.name})`;
-      document.getElementById('modal-recipe-summary').textContent = `원두 ${dose}g · 물 ${water}g (1:${(water/dose).toFixed(1)}) · 온도 ${temp}°C · 목표 ${formatTime(time)}`;
-      document.getElementById('live-target-time-text').textContent = `목표 ${formatMMSS(time)}`;
-      document.getElementById('live-target-water-text').textContent = `목표 ${water} g`;
-
-      buildPourStages();
-      resetBrewTimer();
-      document.getElementById('brewModal').classList.add('open');
-    }
-
-    function closeBrewModal() {
-      brewRunning = false;
-      if (brewAnimReq) cancelAnimationFrame(brewAnimReq);
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      document.getElementById('brewModal').classList.remove('open');
-    }
-
-    function toggleBrewTimer() {
-      initAudio();
-      const totalTime = parseFloat(document.getElementById('time').value);
-      if (brewElapsed >= totalTime) {
-        resetBrewTimer();
-      }
-
-      brewRunning = !brewRunning;
-      const btn = document.getElementById('btn-toggle-brew');
-      if (brewRunning) {
-        btn.textContent = '⏸ 일시정지';
-        brewLastTick = performance.now();
-        brewLoop(brewLastTick);
-      } else {
-        btn.textContent = '▶ 이어서 추출';
-      }
-    }
-
-    function resetBrewTimer() {
-      brewRunning = false;
-      brewElapsed = 0;
-      triggeredStageIdx = -1;
-      finishTriggered = false;
-      if (brewAnimReq) cancelAnimationFrame(brewAnimReq);
-
-      document.getElementById('btn-toggle-brew').textContent = '▶ 추출 시작';
-      document.getElementById('live-timer-text').textContent = '00:00';
-      document.getElementById('live-water-text').textContent = '0 g';
-      document.getElementById('stage-banner-title').textContent = '준비 완료: [▶ 추출 시작] 버튼을 눌러주세요';
-      document.getElementById('stage-banner-desc').textContent = '버튼을 누르면 1차 뜸들이기부터 4차 푸어링, 추출 완료까지 음성 및 애니메이션으로 안내합니다.';
-
-      pourStages.forEach((_, idx) => {
-        const el = document.getElementById('sched-item-' + idx);
-        if (el) el.className = 'schedule-item';
-      });
-
-      drawBrewAnimation(0, false, 0, 0);
-    }
-
-    function brewLoop(now) {
-      if (!brewRunning) return;
-      const dt = (now - brewLastTick) / 1000;
-      brewLastTick = now;
-      brewElapsed += dt;
-
-      const totalTime = parseFloat(document.getElementById('time').value);
-      const totalWater = parseFloat(document.getElementById('water').value);
-
-      if (brewElapsed >= totalTime) {
-        brewElapsed = totalTime;
-        brewRunning = false;
-        document.getElementById('btn-toggle-brew').textContent = '↺ 다시 추출하기';
-      }
-
-      // 현재 단계 판정
-      let curIdx = 0;
-      for (let i = 0; i < pourStages.length; i++) {
-        if (brewElapsed >= pourStages[i].startSec) curIdx = i;
-      }
-      const curStage = pourStages[curIdx];
-
-      // 새로운 단계 진입 시 알림음 & 음성 출력
-      if (curIdx !== triggeredStageIdx && brewElapsed < totalTime) {
-        triggeredStageIdx = curIdx;
-        playNotification('stage', curStage.voice);
-      }
-
-      // 각 스케줄 카드 하이라이트 업데이트
-      pourStages.forEach((s, idx) => {
-        const el = document.getElementById('sched-item-' + idx);
-        if (!el) return;
-        if (brewElapsed >= totalTime || idx < curIdx) {
-          el.className = 'schedule-item done';
-        } else if (idx === curIdx) {
-          el.className = 'schedule-item active';
-        } else {
-          el.className = 'schedule-item';
-        }
-      });
-
-      // 현재 시점의 부은 물 무게 및 물줄기 활성 여부 계산
-      const isPouringNow = brewElapsed >= curStage.startSec && brewElapsed <= curStage.pourEndSec && brewElapsed < totalTime;
-      let currentPouredWater = curStage.targetWater;
-      if (brewElapsed < curStage.pourEndSec) {
-        const pRatio = Math.max(0, (brewElapsed - curStage.startSec) / Math.max(1, curStage.pourEndSec - curStage.startSec));
-        currentPouredWater = curStage.startWater + (curStage.targetWater - curStage.startWater) * pRatio;
-      }
-
-      // 배너 및 숫자 업데이트
-      document.getElementById('live-timer-text').textContent = formatMMSS(brewElapsed);
-      document.getElementById('live-water-text').textContent = `${Math.round(currentPouredWater)} g`;
-
-      if (brewElapsed >= totalTime) {
-        if (!finishTriggered) {
-          finishTriggered = true;
-          playNotification('finish', '추출이 모두 완료되었습니다. 드리퍼를 치우고 향기로운 커피를 즐겨보세요.');
-        }
-        document.getElementById('stage-banner-title').textContent = '🎉 추출 완료! 드리퍼를 서버에서 치워주세요';
-        document.getElementById('stage-banner-desc').textContent = `오찬욱 바리스타님의 레시피로 총 ${totalWater}g 푸어링 및 추출이 완벽하게 끝났습니다.`;
-      } else {
-        const actionTag = isPouringNow ? '💧 [물 붓는 중]' : '⏳ [물 빠짐 / 대기 중]';
-        document.getElementById('stage-banner-title').textContent = `${curStage.name} ${actionTag}`;
-        document.getElementById('stage-banner-desc').textContent = curStage.desc;
-      }
-
-      // 애니메이션 렌더링
-      drawBrewAnimation(brewElapsed, isPouringNow, currentPouredWater / totalWater, brewElapsed / totalTime);
-
-      if (brewRunning) {
-        brewAnimReq = requestAnimationFrame(brewLoop);
-      }
-    }
-
-    // 드리퍼("오찬욱 바리스타" 각인), 주전자 물줄기, 커피 베드, 하단 서버 애니메이션 그리기
-    function drawBrewAnimation(elapsed, isPouring, waterProgress, timeProgress) {
-      const canvas = document.getElementById('brewAnimCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
-
-      const d = DRIPPERS[currentDripper];
-      const cx = W / 2;
-
-      // 1. 상단 드립 포트 스파우트 & 물줄기
-      ctx.save();
-      ctx.strokeStyle = '#343a40';
-      ctx.lineWidth = 8;
-      ctx.lineCap = 'round';
-      const spoutOffset = isPouring ? Math.sin(elapsed * 4.5) * 18 : 0;
-      ctx.beginPath();
-      ctx.moveTo(cx + 85, 16);
-      ctx.quadraticCurveTo(cx + 40, 38, cx + spoutOffset, 34);
-      ctx.stroke();
-
-      if (isPouring) {
-        ctx.strokeStyle = '#339af0';
-        ctx.lineWidth = 4.5;
-        ctx.setLineDash([8, 5]);
-        ctx.lineDashOffset = -elapsed * 65;
-        ctx.beginPath();
-        ctx.moveTo(cx + spoutOffset, 36);
-        ctx.lineTo(cx + spoutOffset * 0.6, 150);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-      ctx.restore();
-
-      // 2. 드리퍼 본체 외형 (블루보틀 / 하리오 V60 / 칼리타 구분)
-      const topY = 78;
-      const botY = 205;
-      const topHalfW = 92;
-      const botHalfW = currentDripper === 'hario' ? 22 : 52;
-
-      // 드리퍼 내부 물 & 커피 거품(Blooming) 차오름 표현
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(cx - topHalfW, topY);
-      ctx.lineTo(cx + topHalfW, topY);
-      ctx.lineTo(cx + botHalfW, botY);
-      ctx.lineTo(cx - botHalfW, botY);
-      ctx.closePath();
-      ctx.clip();
-
-      // 배경 세라믹 질감
-      ctx.fillStyle = '#f8f9fa';
-      ctx.fillRect(0, topY, W, botY - topY);
-
-      // 커피 베드 + 차오른 물 높이
-      const slurryLevel = isPouring
-        ? 0.58 + Math.sin(elapsed * 3) * 0.05
-        : Math.max(0.28, 0.52 - timeProgress * 0.22);
-      const slurryY = botY - (botY - topY) * slurryLevel;
-
-      // 추출수 & 커피층 채우기
-      const grad = ctx.createLinearGradient(0, slurryY, 0, botY);
-      grad.addColorStop(0, '#c08552');
-      grad.addColorStop(0.25, '#7f4f24');
-      grad.addColorStop(1, '#432818');
-      ctx.fillStyle = grad;
-      ctx.fillRect(cx - topHalfW, slurryY, topHalfW * 2, botY - slurryY);
-
-      // 뜸들이기/푸어링 시 상단 크레마 거품 표현
-      ctx.fillStyle = '#ddb892';
-      ctx.beginPath();
-      ctx.ellipse(cx, slurryY, topHalfW * 0.85, 8 + (isPouring ? 3 : 0), 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      // 드리퍼 외곽 몸체 덮개 (반투명 세라믹/컬러)
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(cx - topHalfW, topY);
-      ctx.lineTo(cx + topHalfW, topY);
-      ctx.lineTo(cx + botHalfW, botY);
-      ctx.lineTo(cx - botHalfW, botY);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
-      ctx.fill();
-      ctx.lineWidth = 3.5;
-      ctx.strokeStyle = d.themeColor;
-      ctx.stroke();
-
-      // 드리퍼 손잡이
-      ctx.beginPath();
-      ctx.moveTo(cx + topHalfW - 4, topY + 18);
-      ctx.bezierCurveTo(cx + topHalfW + 38, topY + 22, cx + botHalfW + 38, botY - 25, cx + botHalfW + 8, botY - 22);
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = d.themeColor;
-      ctx.stroke();
-
-      // 드리퍼 정면 "오찬욱 바리스타" 명패 및 로고 각인
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
-      ctx.strokeStyle = d.themeColor;
-      ctx.lineWidth = 1.8;
-      const badgeW = 128, badgeH = 40;
-      ctx.beginPath();
-      ctx.roundRect(cx - badgeW / 2, topY + 42, badgeW, badgeH, 8);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = d.themeDark;
-      ctx.font = '900 14.5px "Pretendard", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('오찬욱 바리스타', cx, topY + 61);
-
-      ctx.fillStyle = '#495057';
-      ctx.font = 'bold 10px sans-serif';
-      ctx.fillText(d.name, cx, topY + 75);
-      ctx.restore();
-
-      // 3. 드리퍼 받침 플레이트 및 하단 커피 방울 낙하
-      ctx.fillStyle = d.themeDark;
-      ctx.fillRect(cx - 72, botY, 144, 7);
-
-      if (elapsed > 3 && timeProgress < 1.0) {
-        ctx.strokeStyle = '#6f4e37';
-        ctx.lineWidth = 3.2;
-        ctx.setLineDash([6, 6]);
-        ctx.lineDashOffset = -elapsed * 45;
-        const holes = currentDripper === 'kalita' ? [cx - 12, cx, cx + 12] : [cx];
-        holes.forEach(hx => {
-          ctx.beginPath();
-          ctx.moveTo(hx, botY + 7);
-          ctx.lineTo(hx, 355);
-          ctx.stroke();
-        });
-        ctx.setLineDash([]);
-      }
-
-      // 4. 하단 유리 서버(Carafe) & 차오르는 커피 액체
-      const srvTop = 225;
-      const srvBot = 362;
-      const srvTopW = 58;
-      const srvBotW = 82;
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(cx - srvTopW, srvTop);
-      ctx.lineTo(cx + srvTopW, srvTop);
-      ctx.lineTo(cx + srvBotW, srvBot);
-      ctx.lineTo(cx - srvBotW, srvBot);
-      ctx.closePath();
-      ctx.clip();
-
-      // 서버에 차오르는 추출 커피 높이
-      const fillRatio = Math.min(0.82, waterProgress * 0.82);
-      const coffeeH = (srvBot - srvTop) * fillRatio;
-      const coffeeY = srvBot - coffeeH;
-
-      if (coffeeH > 2) {
-        const cGrad = ctx.createLinearGradient(0, coffeeY, 0, srvBot);
-        cGrad.addColorStop(0, '#6f3b18');
-        cGrad.addColorStop(1, '#2b1305');
-        ctx.fillStyle = cGrad;
-        ctx.fillRect(cx - srvBotW, coffeeY, srvBotW * 2, coffeeH);
-
-        // 커피 수면 하이라이트
-        ctx.fillStyle = 'rgba(221, 184, 146, 0.55)';
-        ctx.fillRect(cx - srvBotW, coffeeY, srvBotW * 2, 4);
-      }
-      ctx.restore();
-
-      // 유리 서버 외곽선 및 눈금
-      ctx.strokeStyle = '#adb5bd';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(cx - srvTopW, srvTop);
-      ctx.lineTo(cx + srvTopW, srvTop);
-      ctx.lineTo(cx + srvBotW, srvBot);
-      ctx.lineTo(cx - srvBotW, srvBot);
-      ctx.closePath();
-      ctx.stroke();
-
-      // 서버 눈금선
-      ctx.strokeStyle = 'rgba(173, 181, 189, 0.7)';
-      ctx.lineWidth = 1.2;
-      [0.25, 0.5, 0.75].forEach(r => {
-        const y = srvBot - (srvBot - srvTop) * r;
-        ctx.beginPath();
-        ctx.moveTo(cx + 22, y);
-        ctx.lineTo(cx + 38, y);
-        ctx.stroke();
-      });
-
-      // 따스한 커피 김(Steam) 효과
-      if (elapsed > 10) {
-        ctx.strokeStyle = 'rgba(173, 181, 189, 0.45)';
-        ctx.lineWidth = 2;
-        [-22, 0, 22].forEach((offsetX, i) => {
-          const sy = topY - 8 - ((elapsed * 15 + i * 12) % 28);
-          ctx.beginPath();
-          ctx.arc(cx + offsetX + Math.sin(elapsed * 2 + i) * 4, sy, 6, 0, Math.PI);
-          ctx.stroke();
-        });
-      }
-    }
-
-    // 초기 실행
-    updateDial();
-  </script>
-</body>
-</html>
+    function renderDB() {
+      const r = JSON.parse(localStorage.getItem('coffeeDB')||'[]');
+      const view = isMaster ? r : r.filter(x => x.author === userName);
+      const grid = document.getElementById('r-grid');
+      if(!view.length) { grid.innerHTML = '<p style="color:#868e96">저장된 레시피가 없습니다.</p>'; return; }
+      grid.innerHTML = view.map(x => `
+        <div class="r-card">
+          <div class
